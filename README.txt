@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDHATER? (v1.00.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.00.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -30,7 +30,7 @@ The SECTIONS BELOW address these questions in detail:
 
 
 
-── ■ │ 1 - WHAT MODS ARE (IN)COMPATIBLE WITH SPEEDHATER? │ ■ ──────────────────────────────────────
+── ■ │ 1 - WHAT MODS ARE (IN)COMPATIBLE WITH SPEEDFIXER? │ ■ ──────────────────────────────────────
 
 All VLTED AND BINARY MODS should be fully compatible with all SpeedFixer configurations.
 
@@ -42,7 +42,7 @@ SpeedFixer overrides all speedbreaker features of the "NFSMW ExtraOptions" mod b
 
 
 
-── ■ │ 2 - HOW DO I INSTALL SPEEDHATER FOR MY GAME? │ ■ ───────────────────────────────────────────
+── ■ │ 2 - HOW DO I INSTALL SPEEDFIXER FOR MY GAME? │ ■ ───────────────────────────────────────────
 
 BEFORE INSTALLING SpeedFixer:
  1) • make sure your original copy of the game wasn't a repack or came pre-modified in any way,
@@ -67,7 +67,7 @@ If you update from a version older than v1.00.00, replace the old configuration 
 
 
 
-── ■ │ 3 - HOW MAY I SHARE OR BUNDLE SPEEDHATER? │ ■ ──────────────────────────────────────────────
+── ■ │ 3 - HOW MAY I SHARE OR BUNDLE SPEEDFIXER? │ ■ ──────────────────────────────────────────────
 
 You are free to bundle SpeedFixer and its files with your own mod, NO CREDIT REQUIRED.
 In the interest of code transparency, however, consider linking to SpeedFixer's GitHub repository 
