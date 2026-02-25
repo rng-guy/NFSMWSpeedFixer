@@ -4,14 +4,14 @@
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
 SpeedFixer lets you customise the speedbreaker mechanic:
- • above what speed it can be activated,
+ • the speed required to activate it,
  • how long it can stay activated,
  • whether it can recharge passively,
- • above what speed it recharges passively,
- • how long it takes to recharge passively,
- • how drifting translates to recharging,
- • above what speed drifting can recharge,
- • above what slip-angle drifting can recharge,
+ • the speed required for it to recharge passively,
+ • how long it takes for it to recharge passively,
+ • how drifting speed scales to active recharging,
+ • the speed required for active recharging,
+ • the slip angle required for active recharging,
  • how much it slows down in-game time,
  • how much it scales mass for collisions,
  • how much it scales gravity for downforce,

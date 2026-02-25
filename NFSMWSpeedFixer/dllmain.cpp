@@ -143,7 +143,7 @@ static bool ParseParameters()
 
 	ParseFromFile<float>(parser, section, "timeScale",        {timeScale,        {1.f}});
 	ParseFromFile<float>(parser, section, "massScale",        {massScale,        {0.f}});
-	ParseFromFile<float>(parser, section, "gravityScale",     {gravityScale,     {1.f}});
+	ParseFromFile<float>(parser, section, "gravityScale",     {gravityScale});
 	ParseFromFile<float>(parser, section, "frontWheelBoost",  {frontWheelBoost,  {0.f}});
 	ParseFromFile<float>(parser, section, "maxSteeringAngle", {maxSteeringAngle, {0.f, 90.f}});
 	ParseFromFile<float>(parser, section, "aerodynamicDrag",  {aerodynamicDrag,  {0.f, 100.f}});
