@@ -21,9 +21,9 @@ SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: 
 &nbsp;
 
 The **sections below** address these questions in detail:
-1. [What mods are (in)compatible with SpeedFixer?](#1---what-mods-are-incompatible-with-speedhater)
-2. [How do I install SpeedFixer for my game?](#2---how-do-i-install-speedhater-for-my-game)
-3. [How may I share or bundle SpeedFixer?](#3---how-may-i-share-or-bundle-speedhater)
+1. [What mods are (in)compatible with SpeedFixer?](#1---what-mods-are-incompatible-with-speedfixer)
+2. [How do I install SpeedFixer for my game?](#2---how-do-i-install-speedfixer-for-my-game)
+3. [How may I share or bundle SpeedFixer?](#3---how-may-i-share-or-bundle-speedfixer)
 
 &nbsp;
 
@@ -51,7 +51,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 
 **Before installing** SpeedFixer:
 1. make sure your original copy of the game wasn't a repack or came pre-modified in any way,
-2. read and understand the two sections about [mod (in)compatibilities](#1---what-mods-are-incompatible-with-speedhater) above,
+2. read and understand the two sections about [mod (in)compatibilities](#1---what-mods-are-incompatible-with-speedfixer) above,
 3. make sure your game's `speed.exe` is compatible (i.e. 5.75 MB / 6,029,312 bytes large), and
 4. install an `.asi` loader or any mod with one (e.g. the [WideScreenFix](https://github.com/ThirteenAG/WidescreenFixesPack/releases/tag/nfsmw) mod by ThirteenAG).
 
