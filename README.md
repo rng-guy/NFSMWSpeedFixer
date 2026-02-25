@@ -1,0 +1,84 @@
+
+![POV: You should've stopped a looooong time ago.](Thumbnail.jpg "Graphic design is my passion.")
+
+SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: Most Wanted* (2005):
+* above what speed it can be activated,
+* how long it can stay activated,
+* whether it can recharge passively,
+* above what speed it recharges passively,
+* how long it takes to recharge passively,
+* how drifting translates to recharging,
+* above what speed drifting recharges,
+* above what slip-angle drifting can recharge,
+* how much it slows down in-game time,
+* how much it scales mass for collisions,
+* how much it scales gravity for downforce,
+* how much it boosts front-wheel friction,
+* what maximum steering angle it allows,
+* how much aerodynamic drag applies, and
+* how much steering drag applies.
+
+&nbsp;
+
+The **sections below** address these questions in detail:
+1. [What mods are (in)compatible with SpeedFixer?](#1---what-mods-are-incompatible-with-speedhater)
+2. [How do I install SpeedFixer for my game?](#2---how-do-i-install-speedhater-for-my-game)
+3. [How may I share or bundle SpeedFixer?](#3---how-may-i-share-or-bundle-speedhater)
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+
+# 1 - What mods are (in)compatible with SpeedFixer?
+
+All **[VltEd](https://nfs-tools.blogspot.com/2019/02/nfs-vlted-v46-released.html) and [Binary](https://github.com/SpeedReflect/Binary/releases) mods** should be fully compatible with all SpeedFixer configurations. 
+
+Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer configurations. SpeedFixer overrides all speedbreaker features of the [NFSMW ExtraOptions](https://github.com/ExOptsTeam/NFSMWExOpts/releases) mod by ExOptsTeam.
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+
+# 2 - How do I install SpeedFixer for my game?
+
+**Before installing** SpeedFixer:
+1. make sure your original copy of the game wasn't a repack or came pre-modified in any way,
+2. read and understand the two sections about [mod (in)compatibilities](#1---what-mods-are-incompatible-with-speedhater) above,
+3. make sure your game's `speed.exe` is compatible (i.e. 5.75 MB / 6,029,312 bytes large), and
+4. install an `.asi` loader or any mod with one (e.g. the [WideScreenFix](https://github.com/ThirteenAG/WidescreenFixesPack/releases/tag/nfsmw) mod by ThirteenAG).
+
+&nbsp;
+
+**To install** SpeedFixer:
+1. download and unzip the `NfSMW_SpeedFixer_v1.00.0.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/tag/v1.00.00);
+2. if it doesn't exist already, create a `scripts` folder in your game's installation folder;
+3. copy the contents of SpeedFixer's `scripts` folder to your game's `scripts` folder; and
+4. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
+
+&nbsp;
+
+**After installing** SpeedFixer, edit the `NFSMWSpeedFixerSettings.ini` file to your liking.
+
+**To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
+
+**To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.00.00, replace the old configuration file.
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+
+# 3 - How may I share or bundle SpeedFixer?
+
+You are free to bundle SpeedFixer and its files with your own mod, **no credit required**. In the interest of code transparency, however, consider linking to [SpeedFixer's GitHub repository](https://github.com/rng-guy/NFSMWSpeedFixer) somewhere in your mod's documentation (e.g. README).
