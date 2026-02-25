@@ -158,7 +158,7 @@
     <ClInclude Include="MemoryTools.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\NFSMWSpeedHaterSettings.ini" />
+    <None Include="..\NFSMWSpeedFixerSettings.ini" />
     <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>

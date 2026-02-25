@@ -36,7 +36,7 @@
     <None Include="..\README.md">
       <Filter>Documentation</Filter>
     </None>
-    <None Include="..\NFSMWSpeedHaterSettings.ini">
+    <None Include="..\NFSMWSpeedFixerSettings.ini">
       <Filter>Configuration</Filter>
     </None>
   </ItemGroup>
