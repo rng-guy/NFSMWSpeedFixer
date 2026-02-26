@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.02) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -61,7 +61,7 @@ AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your
 TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 
 TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
-If you update from a version older than v1.01.00, replace the old configuration file.
+If you update from a version older than v1.02.00, replace the old configuration file.
 
 
 
@@ -86,3 +86,5 @@ v1.00.00: Initial release
    01.00: Revised documentation and renamed some parameters for clarity
       01: Fixed yet more minor documentation oversights (sigh)
       02: Even more random documentation stuff that annoyed me
+
+   02.00: Improved readability by renaming some more parameters

@@ -20,19 +20,19 @@ constexpr float gravity = -9.81f; // mps / second
 
 // Activation parameters
 float minSpeedToActivate = 30.f / kph2mph; // kph
-float fullCapacity       = 10.f;           // seconds
+float maxDuration        = 10.f;           // seconds
 
 // Recharging parameters
 float minSpeedToRecharge = 100.f / kph2mph; // kph
-float fullRecharge       = 25.f;            // seconds
+float rechargeTime       = 25.f;            // seconds
 
-float rechargeScale = .5f;
+float activeScale   = .5f;
 float minDriftSpeed = 35.f / kph2mph; // kph
 float minDriftSlip  = 30.f;           // degrees
 
 // Physics parameters
 float timeScale    = 4.f;
-float massScale    = 2.f;
+float carMassScale = 2.f;
 float gravityScale = 3.f;
 
 float frictionBoost    = 75.f; // percent
@@ -42,7 +42,7 @@ float aerodynamicDrag = 25.f; // percent
 float steeringDrag    =  0.f; // percent
 
 // Derived parameters
-float fullCapacityScale;
+float maxDurationScale;
 
 bool passiveEnabled;
 
@@ -109,18 +109,18 @@ static bool ParseParameters()
 	// Activation parameters
 	std::string_view section = "Speedbreaker:Activation";
 
-	ParseFromFile<float>(parser, section, "minSpeed", minSpeedToActivate, {0.f});
-	ParseFromFile<float>(parser, section, "duration", fullCapacity,       {.001f});
+	ParseFromFile<float>(parser, section, "minCarSpeed", minSpeedToActivate, {0.f});
+	ParseFromFile<float>(parser, section, "maxDuration", maxDuration,        {.001f});
 
 	// Recharging parameters
 	section = "Speedbreaker:Recharging";
 
-	const bool speedDefined = ParseFromFile<float>(parser, section, "minSpeed", minSpeedToRecharge, {0.f});
-	const bool timeDefined  = ParseFromFile<float>(parser, section, "recharge", fullRecharge,       {.001f});
+	const bool speedDefined = ParseFromFile<float>(parser, section, "minCarSpeed",  minSpeedToRecharge, {0.f});
+	const bool timeDefined  = ParseFromFile<float>(parser, section, "rechargeTime", rechargeTime,       {.001f});
 
 	passiveEnabled = (speedDefined or timeDefined);
 
-	ParseFromFile<float>(parser, section, "rechargeScale", rechargeScale, {0.f});
+	ParseFromFile<float>(parser, section, "activeScale",   activeScale,   {0.f});
 	ParseFromFile<float>(parser, section, "minDriftSpeed", minDriftSpeed, {0.f});
 	ParseFromFile<float>(parser, section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
 
@@ -128,7 +128,7 @@ static bool ParseParameters()
 	section = "Speedbreaker:Physics";
 
 	ParseFromFile<float>(parser, section, "timeScale",        timeScale,        {1.f});
-	ParseFromFile<float>(parser, section, "massScale",        massScale,        {0.f});
+	ParseFromFile<float>(parser, section, "carMassScale",     carMassScale,     {0.f});
 	ParseFromFile<float>(parser, section, "gravityScale",     gravityScale);
 	ParseFromFile<float>(parser, section, "frictionBoost",    frictionBoost,    {0.f});
 	ParseFromFile<float>(parser, section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
@@ -160,18 +160,18 @@ static void __cdecl InitialiseSpeedFixer
 	if (not ParseParameters()) return; // missing file; disable feature
 
 	// Code modifications (activation)
-	fullCapacityScale = 1.f / fullCapacity;
+	maxDurationScale = 1.f / maxDuration;
 
 	MemoryTools::Write<float> (minSpeedToActivate * kph2mph, {0x8B01C0});
-	MemoryTools::Write<float*>(&fullCapacityScale,           {0x6EDDC3});
+	MemoryTools::Write<float*>(&maxDurationScale,            {0x6EDDC3});
 
 	// Code modifications (recharging)
 	minDriftBase = minDriftSpeed / mps2kph;
 	minSlipRad   = minDriftSlip * deg2rad;
 
 	MemoryTools::Write<float> (minSpeedToRecharge * kph2mph, {0x901AE8});
-	MemoryTools::Write<float> (fullRecharge,                 {0x901AE4});
-	MemoryTools::Write<float*>(&rechargeScale,               {0x6A99F8});
+	MemoryTools::Write<float> (rechargeTime,                 {0x901AE4});
+	MemoryTools::Write<float*>(&activeScale,                 {0x6A99F8});
 	MemoryTools::Write<float*>(&minDriftBase,                {0x6A99B8});
 	MemoryTools::Write<float*>(&minSlipRad,                  {0x6A99CB});
 
@@ -186,7 +186,7 @@ static void __cdecl InitialiseSpeedFixer
 
 	MemoryTools::Write<float*>(&timeScale,        {0x472C53});
 	MemoryTools::Write<float> (1.f / timeScale,   {0x6F4DD4});
-	MemoryTools::Write<float> (massScale,         {0x901AEC});
+	MemoryTools::Write<float> (carMassScale,      {0x901AEC});
 	MemoryTools::Write<float*>(&gravityBoost,     {0x6B1F17});
 	MemoryTools::Write<float*>(&frictionScale,    {0x6A9E37});
 	MemoryTools::Write<float*>(&maxSteeringAngle, {0x69E990});
