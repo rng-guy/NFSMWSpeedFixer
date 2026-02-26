@@ -13,7 +13,7 @@ SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: 
 * the slowdown factor for in-game time,
 * the mass scale for collisions,
 * the gravity scale for downforce,
-* the front-wheel friction boost,
+* the boost to steering friction,
 * the maximum steering angle,
 * the amount of aerodynamic drag, and
 * the amount of steering drag.
@@ -24,6 +24,10 @@ The **sections below** address these questions in detail:
 1. [What mods are (in)compatible with SpeedFixer?](#1---what-mods-are-incompatible-with-speedfixer)
 2. [How do I install SpeedFixer for my game?](#2---how-do-i-install-speedfixer-for-my-game)
 3. [How may I share or bundle SpeedFixer?](#3---how-may-i-share-or-bundle-speedfixer)
+
+&nbsp;
+
+For a detailed **version history** of SpeedFixer, see the plain-text version of this document (`README.txt`).
 
 &nbsp;
 
@@ -69,7 +73,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
 
-**To update** SpeedFixer, uninstall it and repeat the installation process above.
+**To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.01.00, replace the old configuration file.
 
 &nbsp;
 

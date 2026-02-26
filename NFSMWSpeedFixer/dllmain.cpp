@@ -36,7 +36,7 @@ float timeScale    = 4.f;
 float massScale    = 2.f;
 float gravityScale = 3.f;
 
-float frontWheelBoost  = 75.f; // percent
+float frictionBoost    = 75.f; // percent
 float maxSteeringAngle = 60.f; // degrees
 
 float aerodynamicDrag = 25.f; // percent
@@ -53,7 +53,7 @@ float minSlipRad;   // rad
 float dilationScale;
 float gravityBoost;  // mps / second
 
-float wheelBoostScale;
+float frictionScale;
 
 float aerodynamicScale;
 float steeringScale;
@@ -132,7 +132,7 @@ static bool ParseParameters()
 	ParseFromFile<float>(parser, section, "timeScale",        timeScale,        {1.f});
 	ParseFromFile<float>(parser, section, "massScale",        massScale,        {0.f});
 	ParseFromFile<float>(parser, section, "gravityScale",     gravityScale);
-	ParseFromFile<float>(parser, section, "frontWheelBoost",  frontWheelBoost,  {0.f});
+	ParseFromFile<float>(parser, section, "frictionBoost",    frictionBoost,    {0.f});
 	ParseFromFile<float>(parser, section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
 	ParseFromFile<float>(parser, section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
 	ParseFromFile<float>(parser, section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
@@ -183,7 +183,7 @@ static void __cdecl InitialiseSpeedFixer
 	// Code modifications (physics)
 	dilationScale    = 1.f / timeScale;
 	gravityBoost     = gravity * (gravityScale - 1.f);
-	wheelBoostScale  = frontWheelBoost / 100.f;
+	frictionScale    = frictionBoost / 100.f;
 	aerodynamicScale = (100.f - aerodynamicDrag) / 100.f;
 	steeringScale    = (85.f - steeringDrag) / 100.f;
 
@@ -191,7 +191,7 @@ static void __cdecl InitialiseSpeedFixer
 	MemoryTools::Write<float> (dilationScale,     {0x6F4DD4});
 	MemoryTools::Write<float> (massScale,         {0x901AEC});
 	MemoryTools::Write<float*>(&gravityBoost,     {0x6B1F17});
-	MemoryTools::Write<float*>(&wheelBoostScale,  {0x6A9E37});
+	MemoryTools::Write<float*>(&frictionScale,    {0x6A9E37});
 	MemoryTools::Write<float*>(&maxSteeringAngle, {0x69E990});
 	MemoryTools::Write<float*>(&aerodynamicScale, {0x6B201E});
 	MemoryTools::Write<float*>(&steeringScale,    {0x6B1FA3});

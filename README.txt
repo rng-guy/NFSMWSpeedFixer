@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.00.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -15,7 +15,7 @@ SpeedFixer lets you customise the speedbreaker mechanic:
  • the slowdown factor for in-game time,
  • the mass scale for collisions,
  • the gravity scale for downforce,
- • the front-wheel friction boost,
+ • the boost to steering friction,
  • the maximum steering angle,
  • the amount of aerodynamic drag, and
  • the amount of steering drag.
@@ -60,6 +60,7 @@ AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your
 TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 
 TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
+If you update from a version older than v1.01.00, replace the old configuration file.
 
 
 
@@ -71,3 +72,14 @@ TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
 You are free to bundle SpeedFixer and its files with your own mod, NO CREDIT REQUIRED.
 In the interest of code transparency, however, consider linking to SpeedFixer's GitHub repository 
 (https://github.com/rng-guy/NFSMWSpeedFixer) somewhere in your mod's documentation (e.g. README).
+
+
+
+
+
+
+── ■ │ 4 - WHAT CHANGED IN EACH VERSION OF SPEEDFIXER? │ ■ ────────────────────────────────────────
+
+v1.00.00: Initial release
+
+   01.00: Revised documentation and renamed some parameters for clarity
