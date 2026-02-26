@@ -24,6 +24,7 @@ The SECTIONS BELOW address these questions in detail:
  1) • What mods are (in)compatible with SpeedFixer?
  2) • How do I install SpeedFixer for my game?
  3) • How may I share or bundle SpeedFixer?
+ 4) • What changed in each version of SpeedFixer?
 
 
 
