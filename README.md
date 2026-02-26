@@ -7,8 +7,8 @@ SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: 
 * whether it can be recharged passively,
 * the speed required for passive recharging,
 * how long passive recharging takes to complete,
-* how effective active recharging by drifting is,
-* the speed required for active recharging,
+* how effective active recharging (by drifting) is,
+* the drifting speed required for active recharging,
 * the slip angle required for active recharging,
 * the slowdown factor for in-game time,
 * the mass scale for collisions,
@@ -62,7 +62,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and unzip the `NfSMW_SpeedFixer_v1.01.0.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/tag/v1.01.00);
+1. download and unzip the `NfSMW_SpeedFixer_v1.01.1.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/tag/v1.01.01);
 2. if it doesn't exist already, create a `scripts` folder in your game's installation folder;
 3. copy the contents of SpeedFixer's `scripts` folder to your game's `scripts` folder; and
 4. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.

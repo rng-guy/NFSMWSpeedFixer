@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.01) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -9,8 +9,8 @@ SpeedFixer lets you customise the speedbreaker mechanic:
  • whether it can be recharged passively,
  • the speed required for passive recharging,
  • how long passive recharging takes to complete,
- • how effective active recharging by drifting is,
- • the speed required for active recharging,
+ • how effective active recharging (by drifting) is,
+ • the drifting speed required for active recharging,
  • the slip angle required for active recharging,
  • the slowdown factor for in-game time,
  • the mass scale for collisions,
@@ -84,3 +84,4 @@ In the interest of code transparency, however, consider linking to SpeedFixer's 
 v1.00.00: Initial release
 
    01.00: Revised documentation and renamed some parameters for clarity
+      01: Fixed yet more minor documentation oversights (sigh)
