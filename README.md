@@ -10,7 +10,7 @@ SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: 
 * how effective active recharging by drifting is,
 * the speed required for active recharging,
 * the slip angle required for active recharging,
-* the slow-down factor for in-game time,
+* the slowdown factor for in-game time,
 * the mass scale for collisions,
 * the gravity scale for downforce,
 * the front-wheel friction boost,
@@ -69,7 +69,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
 
-**To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.00.00, replace the old configuration file.
+**To update** SpeedFixer, uninstall it and repeat the installation process above.
 
 &nbsp;
 
