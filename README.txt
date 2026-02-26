@@ -55,7 +55,7 @@ TO INSTALL SpeedFixer:
  2) • copy the contents of SpeedFixer's "scripts" folder to your game's "scripts" folder; and
  3) • if SpeedFixer's .asi file gets flagged by your antivirus software, whitelist the file.
 
-AFTER INSTALLING SpeedFixer, edit the "NFSMWSpeedFixerSettings.ini" file to your liking.
+AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your liking.
 
 TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 

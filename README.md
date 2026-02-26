@@ -65,7 +65,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 
 &nbsp;
 
-**After installing** SpeedFixer, edit the `NFSMWSpeedFixerSettings.ini` file to your liking.
+**After installing** SpeedFixer, edit its `NFSMWSpeedFixerSettings.ini` file to your liking.
 
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
 
