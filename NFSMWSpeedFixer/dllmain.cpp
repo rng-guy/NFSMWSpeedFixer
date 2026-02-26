@@ -49,8 +49,7 @@ bool passiveEnabled;
 float minDriftBase; // mps
 float minSlipRad;   // rad
 
-float dilationScale;
-float gravityBoost;  // mps / second
+float gravityBoost; // mps / second
 
 float frictionScale;
 
@@ -180,14 +179,13 @@ static void __cdecl InitialiseSpeedFixer
 		MemoryTools::Write<byte>(0xEB, {0x6EDDE3}); // unconditional jump
 
 	// Code modifications (physics)
-	dilationScale    = 1.f / timeScale;
 	gravityBoost     = gravity * (gravityScale - 1.f);
 	frictionScale    = frictionBoost / 100.f;
 	aerodynamicScale = (100.f - aerodynamicDrag) / 100.f;
 	steeringScale    = (85.f - steeringDrag) / 100.f;
 
 	MemoryTools::Write<float*>(&timeScale,        {0x472C53});
-	MemoryTools::Write<float> (dilationScale,     {0x6F4DD4});
+	MemoryTools::Write<float> (1.f / timeScale,   {0x6F4DD4});
 	MemoryTools::Write<float> (massScale,         {0x901AEC});
 	MemoryTools::Write<float*>(&gravityBoost,     {0x6B1F17});
 	MemoryTools::Write<float*>(&frictionScale,    {0x6A9E37});
