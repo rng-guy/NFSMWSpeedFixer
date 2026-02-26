@@ -1,19 +1,19 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.01) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.01.02) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
 SpeedFixer lets you customise the speedbreaker mechanic:
- • the speed required to activate it,
- • how long it can stay activated per use,
+ • the car speed required to activate it,
+ • up to how long it lasts per activation,
  • whether it can be recharged passively,
- • the speed required for passive recharging,
+ • the car speed required for passive recharging,
  • how long passive recharging takes to complete,
  • how effective active recharging (by drifting) is,
  • the drifting speed required for active recharging,
  • the slip angle required for active recharging,
  • the slowdown factor for in-game time,
- • the mass scale for collisions,
+ • the car-mass scale for collisions,
  • the gravity scale for downforce,
  • the boost to steering friction,
  • the maximum steering angle,
@@ -85,3 +85,4 @@ v1.00.00: Initial release
 
    01.00: Revised documentation and renamed some parameters for clarity
       01: Fixed yet more minor documentation oversights (sigh)
+      02: Why do I only ever notice these things too late
