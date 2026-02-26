@@ -85,4 +85,4 @@ v1.00.00: Initial release
 
    01.00: Revised documentation and renamed some parameters for clarity
       01: Fixed yet more minor documentation oversights (sigh)
-      02: Why do I only ever notice these things too late
+      02: Even more random documentation stuff that annoyed me
