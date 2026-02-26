@@ -1,6 +1,5 @@
 #include <fstream>
 #include <Windows.h>
-#include <algorithm>
 #include <filesystem>
 #include <string_view>
 
