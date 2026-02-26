@@ -3,7 +3,7 @@
 
 SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: Most Wanted* (2005):
 * the car speed required to activate it,
-* up to how long it lasts per activation,
+* up to how long it can last per activation,
 * whether it can be recharged passively,
 * the car speed required for passive recharging,
 * how long passive recharging takes to complete,
