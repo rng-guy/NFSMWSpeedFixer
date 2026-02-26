@@ -6,7 +6,7 @@ SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: 
 * up to how long it can last per activation,
 * whether it can be recharged passively,
 * the car speed required for passive recharging,
-* how long passive recharging takes to complete,
+* how long fully passive recharging takes to complete,
 * how effective active recharging (by drifting) is,
 * the drifting speed required for active recharging,
 * the slip angle required for active recharging,
