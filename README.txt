@@ -5,20 +5,20 @@ VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/
 
 SpeedFixer lets you customise the speedbreaker mechanic:
  • the speed required to activate it,
- • how long it can stay activated,
- • whether it can recharge passively,
- • the speed required for it to recharge passively,
- • how long it takes for it to recharge passively,
- • how drifting speed scales to active recharging,
+ • how long it can stay activated per use,
+ • whether it can be recharged passively,
+ • the speed required for passive recharging,
+ • how long passive recharging takes to complete,
+ • how effective active recharging by drifting is,
  • the speed required for active recharging,
  • the slip angle required for active recharging,
- • how much it slows down in-game time,
- • how much it scales mass for collisions,
- • how much it scales gravity for downforce,
- • how much it boosts front-wheel friction,
- • what maximum steering angle it allows,
- • how much aerodynamic drag applies, and
- • how much steering drag applies.
+ • the slow-down factor for in-game time,
+ • the mass scale for collisions,
+ • the gravity scale for downforce,
+ • the front-wheel friction boost,
+ • the maximum steering angle,
+ • the amount of aerodynamic drag, and
+ • the amount of steering drag.
 
 The SECTIONS BELOW address these questions in detail:
  1) • What mods are (in)compatible with SpeedFixer?

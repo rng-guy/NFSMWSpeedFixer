@@ -20,41 +20,43 @@ constexpr float deg2rad = .0175f; // rad / deg
 constexpr float gravity = -9.81f; // mps / second
 
 // Activation parameters
-constinit float minSpeedToActivate = 30.f / kph2mph; // kph
-constinit float fullCapacity       = 10.f;           // seconds
+float minSpeedToActivate = 30.f / kph2mph; // kph
+float fullCapacity       = 10.f;           // seconds
 
 // Recharging parameters
-constinit float minSpeedToRecharge = 100.f / kph2mph; // kph
-constinit float fullRecharge       = 25.f;            // seconds
+float minSpeedToRecharge = 100.f / kph2mph; // kph
+float fullRecharge       = 25.f;            // seconds
 
-constinit float driftScale    = .5f;
-constinit float minDriftSpeed = 35.f / kph2mph; // kph
-constinit float minDriftSlip  = 30.f;           // degrees
+float rechargeScale = .5f;
+float minDriftSpeed = 35.f / kph2mph; // kph
+float minDriftSlip  = 30.f;           // degrees
 
 // Physics parameters
-constinit float timeScale    = 4.f;
-constinit float massScale    = 2.f;
-constinit float gravityScale = 3.f;
+float timeScale    = 4.f;
+float massScale    = 2.f;
+float gravityScale = 3.f;
 
-constinit float frontWheelBoost  = 75.f; // percent
-constinit float maxSteeringAngle = 60.f; // degrees
+float frontWheelBoost  = 75.f; // percent
+float maxSteeringAngle = 60.f; // degrees
 
-constinit float aerodynamicDrag = 25.f; // percent
-constinit float steeringDrag    =  0.f; // percent
+float aerodynamicDrag = 25.f; // percent
+float steeringDrag    =  0.f; // percent
 
 // Derived parameters
-constinit float fullCapacityScale;
+float fullCapacityScale;
 
-constinit bool passiveEnabled;
+bool passiveEnabled;
 
-constinit float minDriftBase; // mps
-constinit float minSlipRad;   // rad
+float minDriftBase; // mps
+float minSlipRad;   // rad
 
-constinit float dilationScale;
-constinit float gravityBoost;    // mps / second
-constinit float wheelBoostScale;
-constinit float aerodynamicScale;
-constinit float steeringScale;
+float dilationScale;
+float gravityBoost;  // mps / second
+
+float wheelBoostScale;
+
+float aerodynamicScale;
+float steeringScale;
 
 
 
@@ -82,31 +84,17 @@ struct Bounds
 
 
 template <typename T>
-struct Parameter
-{
-	T& value;
-
-	const Bounds<T> limits;
-};
-
-
-
-template <typename T>
 bool ParseFromFile
 (
-	inipp::Ini&            parser,
+	const inipp::Ini&      parser,
 	const std::string_view section,
 	const std::string_view key,
-	Parameter<T>&&         parameter
+	T&                     value,
+	const Bounds<T>&       limits = {}
 ) {
-	bool isValid = false;
+	const bool isValid = parser.ExtractFromSection<T>(section, key, value);
 
-	const auto foundSection = parser.sections.find(section);
-
-	if (foundSection != parser.sections.end())
-		isValid = parser.ExtractByKey<T>(foundSection->second, key, parameter.value);
-
-	parameter.limits.Enforce(parameter.value);
+	limits.Enforce(value);
 
 	return isValid;
 }
@@ -118,36 +106,36 @@ static bool ParseParameters()
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
 	if (not fileStream.is_open()) return false; // missing file; disable feature
 
-	inipp::Ini parser(fileStream);
+	const inipp::Ini parser(fileStream);
 
 	// Activation parameters
 	std::string_view section = "Speedbreaker:Activation";
 
-	ParseFromFile<float>(parser, section, "minSpeed", {minSpeedToActivate, {0.f}});
-	ParseFromFile<float>(parser, section, "capacity", {fullCapacity,       {.001f}});
+	ParseFromFile<float>(parser, section, "minSpeed", minSpeedToActivate, {0.f});
+	ParseFromFile<float>(parser, section, "duration", fullCapacity,       {.001f});
 
 	// Recharging parameters
 	section = "Speedbreaker:Recharging";
 
-	const bool speedDefined = ParseFromFile<float>(parser, section, "minSpeed", {minSpeedToRecharge, {0.f}});
-	const bool timeDefined  = ParseFromFile<float>(parser, section, "recharge", {fullRecharge,       {.001f}});
+	const bool speedDefined = ParseFromFile<float>(parser, section, "minSpeed", minSpeedToRecharge, {0.f});
+	const bool timeDefined  = ParseFromFile<float>(parser, section, "recharge", fullRecharge,       {.001f});
 
 	passiveEnabled = (speedDefined or timeDefined);
 
-	ParseFromFile<float>(parser, section, "driftScale",    {driftScale,    {0.f}});
-	ParseFromFile<float>(parser, section, "minDriftSpeed", {minDriftSpeed, {0.f}});
-	ParseFromFile<float>(parser, section, "minDriftSlip",  {minDriftSlip,  {0.f, 90.f}});
+	ParseFromFile<float>(parser, section, "rechargeScale", rechargeScale, {0.f});
+	ParseFromFile<float>(parser, section, "minDriftSpeed", minDriftSpeed, {0.f});
+	ParseFromFile<float>(parser, section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
 
 	// Physics parameters
 	section = "Speedbreaker:Physics";
 
-	ParseFromFile<float>(parser, section, "timeScale",        {timeScale,        {1.f}});
-	ParseFromFile<float>(parser, section, "massScale",        {massScale,        {0.f}});
-	ParseFromFile<float>(parser, section, "gravityScale",     {gravityScale});
-	ParseFromFile<float>(parser, section, "frontWheelBoost",  {frontWheelBoost,  {0.f}});
-	ParseFromFile<float>(parser, section, "maxSteeringAngle", {maxSteeringAngle, {0.f, 90.f}});
-	ParseFromFile<float>(parser, section, "aerodynamicDrag",  {aerodynamicDrag,  {0.f, 100.f}});
-	ParseFromFile<float>(parser, section, "steeringDrag",     {steeringDrag,     {0.f, 85.f}});
+	ParseFromFile<float>(parser, section, "timeScale",        timeScale,        {1.f});
+	ParseFromFile<float>(parser, section, "massScale",        massScale,        {0.f});
+	ParseFromFile<float>(parser, section, "gravityScale",     gravityScale);
+	ParseFromFile<float>(parser, section, "frontWheelBoost",  frontWheelBoost,  {0.f});
+	ParseFromFile<float>(parser, section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+	ParseFromFile<float>(parser, section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
+	ParseFromFile<float>(parser, section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
 
 	return true;
 }
@@ -185,7 +173,7 @@ static void __cdecl InitialiseSpeedFixer
 
 	MemoryTools::Write<float> (minSpeedToRecharge * kph2mph, {0x901AE8});
 	MemoryTools::Write<float> (fullRecharge,                 {0x901AE4});
-	MemoryTools::Write<float*>(&driftScale,                  {0x6A99F8});
+	MemoryTools::Write<float*>(&rechargeScale,               {0x6A99F8});
 	MemoryTools::Write<float*>(&minDriftBase,                {0x6A99B8});
 	MemoryTools::Write<float*>(&minSlipRad,                  {0x6A99CB});
 
