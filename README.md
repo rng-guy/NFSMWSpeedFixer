@@ -62,7 +62,7 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and unzip the `NfSMW_SpeedFixer_v1.02.0.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/tag/v1.02.00);
+1. download and unzip the `NfSMW_SpeedFixer_v1.02.0.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest);
 2. if it doesn't exist already, create a `scripts` folder in your game's installation folder;
 3. copy the contents of SpeedFixer's `scripts` folder to your game's `scripts` folder; and
 4. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
