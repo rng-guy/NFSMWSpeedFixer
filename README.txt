@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.01) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -88,3 +88,4 @@ v1.00.00: Initial release
       02: Even more random documentation stuff that annoyed me
 
    02.00: Improved readability by renaming some more parameters
+      01: Simplified internal configuration-file parser
