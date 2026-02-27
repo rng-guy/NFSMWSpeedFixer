@@ -10,19 +10,24 @@
 
 
 
-// Parameters ---------------------------------------------------------------------------------------------------------------------------------------
+// Conversion constants -----------------------------------------------------------------------------------------------------------------------------
 
-// Conversions
 constexpr float kph2mph = .6214f; // mph / kph
 constexpr float mps2kph = 3.6f;   // kph / mps
 constexpr float deg2rad = .0175f; // rad / deg
 constexpr float gravity = -9.81f; // mps / second
 
-// Activation parameters
+
+
+
+
+// Speedbreaker parameters --------------------------------------------------------------------------------------------------------------------------
+
+// Activation
 float minSpeedToActivate = 30.f / kph2mph; // kph
 float maxDuration        = 10.f;           // seconds
 
-// Recharging parameters
+// Recharging
 float minSpeedToRecharge = 100.f / kph2mph; // kph
 float rechargeTime       = 25.f;            // seconds
 
@@ -30,7 +35,7 @@ float activeScale   = .5f;
 float minDriftSpeed = 35.f / kph2mph; // kph
 float minDriftSlip  = 30.f;           // degrees
 
-// Physics parameters
+// Physics
 float timeScale    = 4.f;
 float carMassScale = 2.f;
 float gravityScale = 3.f;
@@ -41,7 +46,12 @@ float maxSteeringAngle = 60.f; // degrees
 float aerodynamicDrag = 25.f; // percent
 float steeringDrag    =  0.f; // percent
 
-// Derived parameters
+
+
+
+
+// Auxiliary parameters -----------------------------------------------------------------------------------------------------------------------------
+
 float maxDurationScale;
 
 bool passiveEnabled;
@@ -176,7 +186,7 @@ static void __cdecl InitialiseSpeedFixer
 	MemoryTools::Write<float*>(&minSlipRad,                  {0x6A99CB});
 
 	if (not passiveEnabled)
-		MemoryTools::Write<byte>(0xEB, {0x6EDDE3}); // unconditional jump
+		MemoryTools::Write<byte>(0xEB, {0x6EDDE3}); // jump near, relative
 
 	// Code modifications (physics)
 	gravityBoost     = gravity * (gravityScale - 1.f);
@@ -196,19 +206,6 @@ static void __cdecl InitialiseSpeedFixer
 
 
 
-static bool IsExecutableCompatible()
-{
-	// Credit: thelink2012 and MWisBest
-	const auto base = reinterpret_cast<uintptr_t>(GetModuleHandleA(NULL));
-
-	const auto dos = reinterpret_cast<PIMAGE_DOS_HEADER>(base);
-	const auto nt  = reinterpret_cast<PIMAGE_NT_HEADERS>(base + dos->e_lfanew);
-
-	return (nt->OptionalHeader.AddressOfEntryPoint == 0x3C4040);
-}
-
-
-
 
 
 // DLL hook boilerplate -----------------------------------------------------------------------------------------------------------------------------
@@ -221,7 +218,7 @@ BOOL WINAPI DllMain
 ) {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		if (not IsExecutableCompatible())
+		if (MemoryTools::GetEntryPoint() != 0x3C4040)
 		{
 			MessageBoxA(NULL, "This .exe isn't compatible with SpeedFixer.\nSee SpeedFixer's README for help.", "NFSMW SpeedFixer", MB_ICONERROR);
 
