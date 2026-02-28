@@ -154,7 +154,7 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inipp.h" />
+    <ClInclude Include="BasicParser.h" />
     <ClInclude Include="MemoryTools.h" />
   </ItemGroup>
   <ItemGroup>

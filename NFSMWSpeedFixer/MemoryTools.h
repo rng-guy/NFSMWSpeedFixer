@@ -9,7 +9,9 @@
 
 
 // Unscoped aliases
-using byte    = unsigned char;
+using byte = unsigned char;
+using word = unsigned short;
+
 using address = uintptr_t;
 using binary  = uint32_t;
 using vault   = uint32_t;

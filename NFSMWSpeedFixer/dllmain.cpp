@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string_view>
 
-#include "inipp.h"
+#include "BasicParser.h"
 #include "MemoryTools.h"
 
 
@@ -94,11 +94,11 @@ struct Bounds
 template <typename T>
 bool ParseFromFile
 (
-	const inipp::Ini&      parser,
-	const std::string_view section,
-	const std::string_view key,
-	T&                     value,
-	const Bounds<T>&       limits = {}
+	const BasicParser::Parser& parser,
+	const std::string_view     section,
+	const std::string_view     key,
+	T&                         value,
+	const Bounds<T>&           limits = {}
 ) {
 	const bool isValid = parser.ExtractFromSection<T>(section, key, value);
 
@@ -114,7 +114,7 @@ static bool ParseParameters()
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
 	if (not fileStream.is_open()) return false; // missing file; disable feature
 
-	const inipp::Ini parser(fileStream);
+	const BasicParser::Parser parser(fileStream);
 
 	// Activation parameters
 	std::string_view section = "Speedbreaker:Activation";
