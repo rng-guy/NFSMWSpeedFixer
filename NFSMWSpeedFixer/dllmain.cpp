@@ -1,10 +1,22 @@
 #include <fstream>
+#include <optional>
 #include <Windows.h>
 #include <filesystem>
 #include <string_view>
 
-#include "BasicParser.h"
 #include "MemoryTools.h"
+#include "StreamParser.h"
+
+
+
+
+
+// Aliases ------------------------------------------------------------------------------------------------------------------------------------------
+
+using byte    = MemoryTools::byte;
+using address = MemoryTools::address;
+
+using Parser = StreamParser::Parser<>;
 
 
 
@@ -50,15 +62,18 @@ float steeringDrag    =  0.f; // percent
 
 
 
-// Auxiliary parameters -----------------------------------------------------------------------------------------------------------------------------
+// Derived parameters -------------------------------------------------------------------------------------------------------------------------------
 
+// Activation
 float maxDurationScale;
 
+// Recharging
 bool passiveEnabled;
 
 float minDriftBase; // mps
 float minSlipRad;   // rad
 
+// Physics
 float gravityBoost; // mps / second
 
 float frictionScale;
@@ -79,7 +94,7 @@ struct Bounds
 	std::optional<T> upper;
 
 
-	void Enforce(T& value) const
+	constexpr void Enforce(T& value) const noexcept
 	{
 		if (this->lower and (value < *(this->lower)))
 			value = *(this->lower);
@@ -94,13 +109,14 @@ struct Bounds
 template <typename T>
 bool ParseFromFile
 (
-	const BasicParser::Parser& parser,
-	const std::string_view     section,
-	const std::string_view     key,
-	T&                         value,
-	const Bounds<T>&           limits = {}
-) {
-	const bool isValid = parser.ExtractFromSection<T>(section, key, value);
+	const auto&            section,
+	const std::string_view key,
+	T&                     value,
+	const Bounds<T>        limits = {}
+) 
+	noexcept
+{
+	const bool isValid = Parser::GetValue<T>(section, key, value);
 
 	limits.Enforce(value);
 
@@ -114,36 +130,54 @@ static bool ParseParameters()
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
 	if (not fileStream.is_open()) return false; // missing file; disable feature
 
-	const BasicParser::Parser parser(fileStream);
+	const Parser parser(fileStream);
+
+	const auto& sections = parser.GetSections();
 
 	// Activation parameters
-	std::string_view section = "Speedbreaker:Activation";
+	auto foundSection = sections.find("Speedbreaker:Activation");
 
-	ParseFromFile<float>(parser, section, "minCarSpeed", minSpeedToActivate, {0.f});
-	ParseFromFile<float>(parser, section, "maxDuration", maxDuration,        {.001f});
+	if (foundSection != sections.end())
+	{
+		const auto& section = foundSection->second;
+
+		ParseFromFile<float>(section, "minCarSpeed", minSpeedToActivate, {0.f});
+		ParseFromFile<float>(section, "maxDuration", maxDuration,        {.001f});
+	}
 
 	// Recharging parameters
-	section = "Speedbreaker:Recharging";
+	foundSection = sections.find("Speedbreaker:Recharging");
+	
+	if (foundSection != sections.end())
+	{
+		const auto& section = foundSection->second;
 
-	const bool speedDefined = ParseFromFile<float>(parser, section, "minCarSpeed",  minSpeedToRecharge, {0.f});
-	const bool timeDefined  = ParseFromFile<float>(parser, section, "rechargeTime", rechargeTime,       {.001f});
+		const bool speedDefined = ParseFromFile<float>(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
+		const bool timeDefined  = ParseFromFile<float>(section, "rechargeTime", rechargeTime,       {.001f});
 
-	passiveEnabled = (speedDefined or timeDefined);
+		passiveEnabled = (speedDefined or timeDefined);
 
-	ParseFromFile<float>(parser, section, "activeScale",   activeScale,   {0.f});
-	ParseFromFile<float>(parser, section, "minDriftSpeed", minDriftSpeed, {0.f});
-	ParseFromFile<float>(parser, section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+		ParseFromFile<float>(section, "activeScale",   activeScale,   {0.f});
+		ParseFromFile<float>(section, "minDriftSpeed", minDriftSpeed, {0.f});
+		ParseFromFile<float>(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+	}
+	else passiveEnabled = false;
 
 	// Physics parameters
-	section = "Speedbreaker:Physics";
+	foundSection = sections.find("Speedbreaker:Physics");
 
-	ParseFromFile<float>(parser, section, "timeScale",        timeScale,        {1.f});
-	ParseFromFile<float>(parser, section, "carMassScale",     carMassScale,     {0.f});
-	ParseFromFile<float>(parser, section, "gravityScale",     gravityScale);
-	ParseFromFile<float>(parser, section, "frictionBoost",    frictionBoost,    {0.f});
-	ParseFromFile<float>(parser, section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
-	ParseFromFile<float>(parser, section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
-	ParseFromFile<float>(parser, section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
+	if (foundSection != sections.end())
+	{
+		const auto& section = foundSection->second;
+
+		ParseFromFile<float>(section, "timeScale",        timeScale,        {1.f});
+		ParseFromFile<float>(section, "carMassScale",     carMassScale,     {0.f});
+		ParseFromFile<float>(section, "gravityScale",     gravityScale);
+		ParseFromFile<float>(section, "frictionBoost",    frictionBoost,    {0.f});
+		ParseFromFile<float>(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+		ParseFromFile<float>(section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
+		ParseFromFile<float>(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
+	}
 
 	return true;
 }

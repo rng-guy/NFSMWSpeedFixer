@@ -154,8 +154,8 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicParser.h" />
     <ClInclude Include="MemoryTools.h" />
+    <ClInclude Include="StreamParser.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\NFSMWSpeedFixerSettings.ini" />

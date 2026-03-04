@@ -1,25 +1,27 @@
 #pragma once
 
-#include <array>
+#include <cstdarg>
 #include <cstring>
-#include <concepts>
 #include <Windows.h>
+#include <memoryapi.h>
+#include <libloaderapi.h>
 #include <initializer_list>
-
-
-
-// Unscoped aliases
-using byte = unsigned char;
-using word = unsigned short;
-
-using address = uintptr_t;
-using binary  = uint32_t;
-using vault   = uint32_t;
 
 
 
 namespace MemoryTools
 {
+
+	// Scoped aliases -------------------------------------------------------------------------------------------------------------------------------
+
+	using byte = unsigned char;
+	using word = unsigned short;
+
+	using address = uintptr_t;
+
+
+
+
 
 	// Status variables -----------------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +33,7 @@ namespace MemoryTools
 
 
 
-	// Auxiliary functions --------------------------------------------------------------------------------------------------------------------------
+	// Memory functions -----------------------------------------------------------------------------------------------------------------------------
 
 	bool IsModuleLoaded(const char* const name)
 	{
@@ -64,9 +66,9 @@ namespace MemoryTools
 		for (const address location : locations)
 		{
 			DWORD previousSetting = 0x0;
-			void* memoryLocation = reinterpret_cast<void*>(location);
+			void* memoryLocation  = reinterpret_cast<void*>(location);
 
-			VirtualProtect(memoryLocation, numBytes, PAGE_READWRITE, &previousSetting);
+			VirtualProtect(memoryLocation, numBytes, PAGE_READWRITE,  &previousSetting);
 			std::memcpy   (memoryLocation, &data,    numBytes);
 			VirtualProtect(memoryLocation, numBytes, previousSetting, &previousSetting);
 		}
@@ -112,14 +114,14 @@ namespace MemoryTools
 		const address     start,
 		const address     end
 	) {
-		const address targetStart = start + sizeof(byte);
+		const address targetStart = start       + sizeof(byte);
 		const address jumpEnd     = targetStart + sizeof(address);
 
 		if (end >= jumpEnd)
 		{
 			MakeRangeNOP(start, end);
-
-			Write<byte>(0xE9, {start}); // jump near, relative
+			
+			Write<byte>   (0xE9, {start}); // jump near, relative
 			Write<address>(reinterpret_cast<address>(target) - jumpEnd, {targetStart});
 		}
 		else ++numCaveErrors;
@@ -138,7 +140,7 @@ namespace MemoryTools
 
 		if (opcode == 0xE8) // call near, relative
 		{
-			const address targetStart = location + sizeof(byte);
+			const address targetStart = location    + sizeof(byte);
 			const address callEnd     = targetStart + sizeof(address);
 
 			std::memcpy(&replacedTarget, reinterpret_cast<address*>(targetStart), sizeof(address));
