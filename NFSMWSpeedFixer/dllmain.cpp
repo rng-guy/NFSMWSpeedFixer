@@ -116,7 +116,7 @@ bool ParseFromFile
 ) 
 	noexcept
 {
-	const bool isValid = Parser::GetValue<T>(section, key, value);
+	const bool isValid = Parser::GetValues<T>(section, key, value);
 
 	limits.Enforce(value);
 

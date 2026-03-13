@@ -28,6 +28,9 @@
     <ClInclude Include="MemoryTools.h">
       <Filter>Libraries</Filter>
     </ClInclude>
+    <ClInclude Include="FlatContainers.h">
+      <Filter>Libraries</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
