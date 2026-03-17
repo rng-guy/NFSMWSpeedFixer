@@ -89,4 +89,4 @@ v1.00.00: Initial release
 
    02.00: Improved readability by renaming some more parameters
       01: Simplified internal configuration-file parser
-      02: Made some more structural optimisations
+      02: Added unlimited-duration feature

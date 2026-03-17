@@ -65,6 +65,7 @@ float steeringDrag    =  0.f; // percent
 // Derived parameters -------------------------------------------------------------------------------------------------------------------------------
 
 // Activation
+bool  durationEnabled;
 float maxDurationScale;
 
 // Recharging
@@ -130,7 +131,10 @@ static bool ParseParameters()
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
 	if (not fileStream.is_open()) return false; // missing file; disable feature
 
-	const Parser parser(fileStream);
+	constexpr size_t numSections = 3;
+	constexpr size_t maxNumPairs = 7;
+
+	const Parser parser(fileStream, numSections, maxNumPairs);
 
 	const auto& sections = parser.GetSections();
 
@@ -142,8 +146,10 @@ static bool ParseParameters()
 		const auto& section = foundSection->second;
 
 		ParseFromFile<float>(section, "minCarSpeed", minSpeedToActivate, {0.f});
-		ParseFromFile<float>(section, "maxDuration", maxDuration,        {.001f});
+
+		durationEnabled = ParseFromFile<float>(section, "maxDuration", maxDuration, {.001f});
 	}
+	else durationEnabled = false;
 
 	// Recharging parameters
 	foundSection = sections.find("Speedbreaker:Recharging");
@@ -208,6 +214,9 @@ static void __cdecl InitialiseSpeedFixer
 
 	MemoryTools::Write<float> (minSpeedToActivate * kph2mph, {0x8B01C0});
 	MemoryTools::Write<float*>(&maxDurationScale,            {0x6EDDC3});
+
+	if (not durationEnabled)
+		MemoryTools::Write<byte>(0xEB, {0x6EDDB9}); // jump near, relative
 
 	// Code modifications (recharging)
 	minDriftBase = minDriftSpeed / mps2kph;
