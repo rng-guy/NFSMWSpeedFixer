@@ -1,11 +1,14 @@
 #pragma once
 
+#include <format>
 #include <cstdarg>
 #include <cstring>
 #include <Windows.h>
 #include <memoryapi.h>
+#include <type_traits>
 #include <libloaderapi.h>
 #include <initializer_list>
+#include <processthreadsapi.h>
 
 
 
@@ -23,17 +26,7 @@ namespace MemoryTools
 
 
 
-	// Status variables -----------------------------------------------------------------------------------------------------------------------------
-
-	inline size_t numRangeErrors = 0;
-	inline size_t numCaveErrors  = 0;
-	inline size_t numHookErrors  = 0;
-
-
-
-
-
-	// Memory functions -----------------------------------------------------------------------------------------------------------------------------
+	// Queries and byte-writing ---------------------------------------------------------------------------------------------------------------------
 
 	inline bool IsModuleLoaded(const char* const name)
 	{
@@ -56,6 +49,7 @@ namespace MemoryTools
 
 
 	template <typename T>
+	requires std::is_trivially_copyable_v<T>
 	inline void Write
 	(
 		const T                              data,
@@ -76,14 +70,19 @@ namespace MemoryTools
 
 
 
-	inline void WriteToRange
-	(
-		const byte    value,
-		const address start,
-		const address end
-	) {
-		if (end > start)
-		{
+
+
+	// Helper functions -----------------------------------------------------------------------------------------------------------------------------
+
+	namespace Details
+	{
+
+		inline void WriteToRange
+		(
+			const byte    value,
+			const address start,
+			const address end
+		) {
 			const size_t numBytes = end - start;
 
 			DWORD previousSetting = 0x0;
@@ -93,83 +92,109 @@ namespace MemoryTools
 			std::memset   (memoryLocation, value,    numBytes);
 			VirtualProtect(memoryLocation, numBytes, previousSetting, &previousSetting);
 		}
-		else ++numRangeErrors;
-	}
 
 
 
-	inline void MakeRangeNOP
-	(
-		const address start,
-		const address end
-	) {
-		WriteToRange(0x90, start, end); // NOP
-	}
+		inline void MakeRangeNOP
+		(
+			const address start,
+			const address end
+		) {
+			WriteToRange(0x90, start, end); // NOP
+		}
 
 
 
-	inline void MakeRangeJMP
-	(
-		const address target,
-		const address start,
-		const address end
-	) {
-		const address targetStart = start + sizeof(byte);
-		const address jumpEnd     = targetStart + sizeof(address);
+		inline void MakeRangeJMP
+		(
+			const address start,
+			const address end,
+			const address target
+		) {
+			const address targetStart = start       + sizeof(byte);
+			const address jumpEnd     = targetStart + sizeof(address);
 
-		if (end >= jumpEnd)
-		{
 			MakeRangeNOP(start, end);
 
 			Write<byte>   (0xE9, {start}); // jump near, relative
 			Write<address>(target - jumpEnd, {targetStart});
 		}
-		else ++numCaveErrors;
 	}
 
 
-	inline void MakeRangeJMP
-	(
-		const void* const target,
-		const address     start,
-		const address     end
-	) {
-		MakeRangeJMP(reinterpret_cast<address>(target), start, end);
+
+
+
+	// Address-range writing and hooking ------------------------------------------------------------------------------------------------------------
+
+	template <address start, address end>
+	inline void WriteToRange(const byte value)
+	{
+		static_assert(end > start, "Invalid or empty range");
+
+		Details::WriteToRange(value, start, end);
 	}
 
+
+
+	template <address start, address end>
+	inline void MakeRangeNOP()
+	{
+		static_assert(end > start, "Invalid or empty range");
+
+		Details::MakeRangeNOP(start, end);
+	}
+
+
+
+	template <address start, address end>
+	inline void MakeRangeJMP(const address target)
+	{
+		static_assert(end >= start + sizeof(byte) + sizeof(address), "Cannot accommodate JMP");
+
+		Details::MakeRangeJMP(start, end, target);
+	}
+
+
+	template <address start, address end>
+	inline void MakeRangeJMP(const void* const target)
+	{
+		MakeRangeJMP<start, end>(reinterpret_cast<address>(target));
+	}
+	
 
 
 	inline address MakeCallHook
 	(
-		const address target,
-		const address location
+		const address location,
+		const address target
 	) {
-		address replacedTarget = 0x0;
-
 		const byte opcode = *reinterpret_cast<byte*>(location);
 
-		if (opcode == 0xE8) // call near, relative
+		if (opcode != 0xE8)
 		{
-			const address targetStart = location    + sizeof(byte);
-			const address callEnd     = targetStart + sizeof(address);
+			MessageBoxA(NULL, std::format("Expected opcode 0xE8 at address {:08x}!", location).c_str(), "Fatal hooking error", MB_ICONERROR);
 
-			std::memcpy(&replacedTarget, reinterpret_cast<address*>(targetStart), sizeof(address));
-
-			Write<address>(target - callEnd, {targetStart});
-
-			replacedTarget += callEnd;
+			// Mod corrupted; terminate for safety
+			TerminateProcess(GetCurrentProcess(), 1);
 		}
-		else ++numHookErrors;
 
-		return replacedTarget;
+		const address targetStart = location    + sizeof(byte);
+		const address callEnd     = targetStart + sizeof(address);
+
+		const address original = *reinterpret_cast<volatile address*>(targetStart) + callEnd;
+
+		Write<address>(target - callEnd, {targetStart});
+
+		return original;
 	}
 
 
 	inline address MakeCallHook
 	(
-		const void* const target,
-		const address     location
+		const address     location,
+		const void* const target
 	) {
-		return MakeCallHook(reinterpret_cast<address>(target), location);
+		return MakeCallHook(location, reinterpret_cast<address>(target));
 	}
 }

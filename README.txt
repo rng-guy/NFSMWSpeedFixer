@@ -5,6 +5,7 @@ VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/
 
 SpeedFixer lets you customise the speedbreaker mechanic:
  • the car speed required to activate it,
+ • whether it has a limited active duration,
  • up to how long it can last per activation,
  • whether it can recharge passively over time,
  • the car speed required for passive recharging,

@@ -268,7 +268,7 @@ BOOL WINAPI DllMain
 			return FALSE;
 		}
 
-		InitialiseSpeedFixerOriginal = MemoryTools::MakeCallHook(InitialiseSpeedFixer, 0x6665B4); // InitializeEverything (0x665FC0)
+		InitialiseSpeedFixerOriginal = MemoryTools::MakeCallHook(0x6665B4, InitialiseSpeedFixer); // InitializeEverything (0x665FC0)
 	}
 
 	return TRUE;
