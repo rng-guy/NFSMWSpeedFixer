@@ -28,10 +28,6 @@ The **sections below** address these questions in detail:
 
 &nbsp;
 
-For a detailed **version history** of SpeedFixer, see the plain-text version of this document (`README.txt`).
-
-&nbsp;
-
 &nbsp;
 
 &nbsp;
@@ -41,6 +37,8 @@ For a detailed **version history** of SpeedFixer, see the plain-text version of 
 # 1 - What mods are (in)compatible with SpeedFixer?
 
 All **[VltEd](https://nfs-tools.blogspot.com/2019/02/nfs-vlted-v46-released.html) and [Binary](https://github.com/SpeedReflect/Binary/releases) mods** should be fully compatible with all SpeedFixer configurations. 
+
+&nbsp;
 
 Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer configurations. SpeedFixer overrides all speedbreaker features of the [NFSMW ExtraOptions](https://github.com/ExOptsTeam/NFSMWExOpts/releases) mod by ExOptsTeam.
 
@@ -72,7 +70,11 @@ Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer
 
 **After installing** SpeedFixer, edit its `NFSMWSpeedFixerSettings.ini` file to your liking.
 
+&nbsp;
+
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
+
+&nbsp;
 
 **To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.02.00, replace the old configuration file.
 
