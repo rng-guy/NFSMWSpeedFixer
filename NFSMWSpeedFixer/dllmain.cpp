@@ -131,10 +131,10 @@ static bool ParseParameters()
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
 	if (not fileStream.is_open()) return false; // missing file; disable feature
 
-	constexpr size_t numSections = 3;
-	constexpr size_t maxNumPairs = 7;
+	constexpr size_t sectionCapacity        = 3; // sections
+	constexpr size_t pairCapacityPerSection = 7; // pairs
 
-	const Parser parser(fileStream, numSections, maxNumPairs);
+	const Parser parser(fileStream, sectionCapacity, pairCapacityPerSection);
 
 	const auto& sections = parser.GetSections();
 
