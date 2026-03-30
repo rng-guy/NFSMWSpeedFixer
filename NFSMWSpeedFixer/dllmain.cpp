@@ -3,14 +3,13 @@
 
 #if !defined(_MSC_VER)
 #error "SpeedFixer requires MSVC."
-#endif
 
-#if !defined(_WIN32) || defined(_WIN64)
+#elif !defined(_WIN32) || defined(_WIN64)
 #error "SpeedFixer requires 32-bit Windows."
-#endif
 
-#if !defined(_MSVC_LANG) || (_MSVC_LANG < 202002L)
+#elif !defined(_MSVC_LANG) || (_MSVC_LANG < 202002L)
 #error "SpeedFixer requires C++20 or newer."
+
 #endif
 
 
