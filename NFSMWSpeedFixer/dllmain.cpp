@@ -1,3 +1,7 @@
+#if !defined(_MSC_VER) || !defined(_WIN32) || defined(_WIN64)
+#error "SpeedFixer requires 32-bit Windows and MSVC."
+#endif
+
 #include <fstream>
 #include <optional>
 #include <Windows.h>

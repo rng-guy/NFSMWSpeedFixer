@@ -29,10 +29,16 @@ namespace StreamParser
 	{
 
 		template <typename T>
-		concept IsModernStringOrView = (std::same_as<T, std::string> or std::same_as<T, std::string_view>);
+		concept IsLegacyString = std::same_as<T, const char*>;
 
 		template <typename T>
-		concept IsAnyStringOrView = (std::same_as<T, const char*> or IsModernStringOrView<T>);
+		concept IsModernString = std::same_as<T, std::string>;
+
+		template <typename T>
+		concept IsModernStringOrView = (IsModernString<T> or std::same_as<T, std::string_view>);
+
+		template <typename T>
+		concept IsAnyStringOrView = (IsLegacyString<T> or IsModernStringOrView<T>);
 
 		template <typename V>
 		concept IsPureArithmetic = (std::is_arithmetic_v<V> and std::same_as<V, std::remove_cvref_t<V>>);
@@ -52,7 +58,7 @@ namespace StreamParser
 
 		// For noexcept equlifiers due to potential allocation(s)
 		template <typename ...Ts>
-		concept AreAllocationFree = ((not std::same_as<Ts, std::string>) and ...);
+		concept AreAllocationFree = ((not IsModernString<Ts>) and ...);
 	}
 
 
@@ -98,9 +104,7 @@ namespace StreamParser
 
 		constexpr std::string_view GetEnclosed(const std::string_view view) noexcept
 		{
-			if (view.size() <= 2) return {};
-
-			return view.substr(1, view.length() - 2);
+			return (view.size() > 2) ? view.substr(1, view.length() - 2) : std::string_view();
 		}
 
 
@@ -186,12 +190,12 @@ namespace StreamParser
 	{
 		if (source.empty()) return false;
 
-		V result{};
+		auto result = V();
 
 		const auto viewEnd          = source.data() + source.size();
 		const auto [readEnd, error] = std::from_chars(source.data(), viewEnd, result);
 
-		if (error != std::errc{}) return false;
+		if (error != std::errc()) return false;
 		if (readEnd != viewEnd)   return false;
 
 		value = result;
@@ -316,7 +320,7 @@ namespace StreamParser
 
 
 		template <typename ...Vs>
-		requires Concepts::AreParseable<Vs...>
+		requires Concepts::AreSeparatorParseable<Vs...>
 		static bool DispatchToParsing
 		(
 			const std::string&    source,
@@ -324,11 +328,20 @@ namespace StreamParser
 		)
 			noexcept(Concepts::AreAllocationFree<Vs...>)
 		{
-			if constexpr (Concepts::AreSeparatorParseable<Vs...>)
-				return ParseFromString(source, separator, values...);
+			return ParseFromString<Vs...>(source, separator, values...);
+		}
 
-			else
-				return ParseFromString(source, values...);
+
+		template <typename V>
+		requires Concepts::AreLineParseable<V>
+		static bool DispatchToParsing
+		(
+			const std::string& source,
+			V&                 value
+		)
+			noexcept(Concepts::AreAllocationFree<V>)
+		{
+			return ParseFromString(source, value);
 		}
 
 
@@ -394,9 +407,7 @@ namespace StreamParser
 
 					continue;
 				}
-				
-				// Check for active section
-				if (not currentSection) continue;
+				else if (not currentSection) continue;
 
 				// Parse key-value pair
 				const size_t firstAssign = content.find(assign);
@@ -485,11 +496,11 @@ namespace StreamParser
 					{
 						(..., values.push_back(std::move(std::get<columnIDs>(candidates))));
 
-						if constexpr (Concepts::IsModernStringOrView<K>)
-							keys.emplace_back(key);
+						if constexpr (Concepts::IsLegacyString<K>)
+							keys.push_back(key.c_str());
 
 						else
-							keys.push_back(key.c_str());
+							keys.emplace_back(key);
 
 						++numReads;
 					}
