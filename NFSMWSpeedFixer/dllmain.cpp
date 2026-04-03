@@ -149,7 +149,7 @@ bool ParseFromFile
 static bool ParseParameters()
 {
 	std::ifstream fileStream(std::filesystem::path("scripts/NFSMWSpeedFixerSettings.ini"));
-	if (not fileStream.is_open()) return false; // missing file; disable feature
+	if (not fileStream.is_open()) return false; // missing file; disable mod
 
 	constexpr size_t sectionCapacity        = 3; // sections
 	constexpr size_t pairCapacityPerSection = 7; // pairs
@@ -227,7 +227,7 @@ static void __cdecl InitialiseSpeedFixer
 	OriginalFunction(numArgs, argArray);
 
 	// Apply hooked logic last
-	if (not ParseParameters()) return; // missing file; disable feature
+	if (not ParseParameters()) return; // missing file; disable mod
 
 	// Code modifications (activation)
 	maxDurationScale = 1.f / maxDuration;
