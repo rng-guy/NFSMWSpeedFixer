@@ -22,17 +22,17 @@ namespace FlatContainers
 
 		// Concept to filter for unique_ptr
 		template <typename T>
-		struct is_unique_ptr : std::false_type {};
+		struct IsUnique : std::false_type {};
 
-		template <typename T, typename D>
-		struct is_unique_ptr<std::unique_ptr<T, D>> : std::true_type {};
+		template <typename T, class Deleter>
+		struct IsUnique<std::unique_ptr<T, Deleter>> : std::true_type {};
 
 		template <typename T>
-		concept IsUniquePtr = is_unique_ptr<T>::value;
+		concept IsUniquePtr = IsUnique<T>::value;
 
 
 
-		// Vector wrapper for boilerplate
+		// Vector wrapper for common boilerplate
 		template <typename T>
 		class Wrapper
 		{
@@ -61,9 +61,9 @@ namespace FlatContainers
 			~Wrapper() = default;
 
 		
-			constexpr explicit Wrapper(const size_type cap)
+			constexpr explicit Wrapper(const size_type capacity)
 			{
-				this->reserve(cap);
+				this->reserve(capacity);
 			}
 
 
@@ -71,9 +71,9 @@ namespace FlatContainers
 		public:
 
 			// May invalidate all iterators
-			constexpr void reserve(const size_type new_cap)
+			constexpr void reserve(const size_type capacity)
 			{
-				this->data.reserve(new_cap);
+				this->data.reserve(capacity);
 			}
 
 
@@ -148,7 +148,7 @@ namespace FlatContainers
 
 		constexpr Set() = default;
 
-		constexpr explicit Set(const size_type cap) : base(cap) {}
+		constexpr explicit Set(const size_type capacity) : base(capacity) {}
 
 
 		constexpr Set(const std::initializer_list<value_type> list)
@@ -225,7 +225,23 @@ namespace FlatContainers
 		}
 
 
-		// Invalidates iterators of erased and final value
+		// Invalidates iterators of erased and last element
+		constexpr iterator erase(const iterator it)
+		{
+			if (it == this->end()) return it;
+
+			const auto lastIt = std::prev(this->end());
+
+			if (it != lastIt)
+				*it = std::move(*lastIt);
+
+			this->data.pop_back();
+
+			return it;
+		}
+
+
+		// Invalidates iterators of erased and last element
 		template <typename U>
 		requires std::equality_comparable_with<U, value_type>
 		constexpr bool erase(const U& value)
@@ -239,23 +255,7 @@ namespace FlatContainers
 		}
 
 
-		// Invalidates iterators of erased and final value
-		constexpr iterator erase(const iterator it)
-		{
-			if (it == this->end()) return it;
-
-			const auto last_it = std::prev(this->end());
-
-			if (it != last_it)
-				*it = std::move(*last_it);
-
-			this->data.pop_back();
-
-			return it;
-		}
-
-
-		// Invalidates iterators of erased and final value
+		// Invalidates iterators of erased and last element
 		constexpr reverse_iterator erase(const reverse_iterator rit)
 		{
 			return (rit != this->rend()) ? reverse_iterator(this->erase(std::prev(rit.base()))) : rit;
@@ -290,7 +290,7 @@ namespace FlatContainers
 
 		constexpr Map() = default;
 
-		constexpr explicit Map(const size_type cap) : base(cap) {}
+		constexpr explicit Map(const size_type capacity) : base(capacity) {}
 
 
 		constexpr Map(const std::initializer_list<value_type> list)
@@ -319,8 +319,8 @@ namespace FlatContainers
 		requires std::equality_comparable_with<U, key_type>
 		constexpr iterator find(const U& key)
 		{
-			const auto is_match = [&key](const value_type& pair) -> bool {return (pair.first == key);};
-			return std::find_if(this->begin(), this->end(), is_match);
+			const auto keyMatches = [&key](const value_type& pair) -> bool {return (pair.first == key);};
+			return std::find_if(this->begin(), this->end(), keyMatches);
 		}
 
 
@@ -328,8 +328,8 @@ namespace FlatContainers
 		requires std::equality_comparable_with<U, key_type>
 		constexpr const_iterator find(const U& key) const
 		{
-			const auto is_match = [&key](const value_type& pair) -> bool {return (pair.first == key);};
-			return std::find_if(this->begin(), this->end(), is_match);
+			const auto keyMatches = [&key](const value_type& pair) -> bool {return (pair.first == key);};
+			return std::find_if(this->begin(), this->end(), keyMatches);
 		}
 
 
@@ -400,7 +400,23 @@ namespace FlatContainers
 		}
 
 
-		// Invalidates iterators of erased and final value
+		// Invalidates iterators of erased and last element
+		constexpr iterator erase(const iterator it)
+		{
+			if (it == this->end()) return it;
+
+			const auto lastIt = std::prev(this->end());
+
+			if (it != lastIt)
+				*it = std::move(*lastIt);
+
+			this->data.pop_back();
+
+			return it;
+		}
+
+
+		// Invalidates iterators of erased and last element
 		template <typename U>
 		requires std::equality_comparable_with<U, key_type>
 		constexpr bool erase(const U& key)
@@ -414,23 +430,7 @@ namespace FlatContainers
 		}
 
 
-		// Invalidates iterators of erased and final value
-		constexpr iterator erase(const iterator it)
-		{
-			if (it == this->end()) return it;
-
-			const auto final_it = std::prev(this->end());
-
-			if (it != final_it)
-				*it = std::move(*final_it);
-
-			this->data.pop_back();
-
-			return it;
-		}
-
-
-		// Invalidates iterators of erased and final value
+		// Invalidates iterators of erased and last element
 		constexpr reverse_iterator erase(const reverse_iterator rit)
 		{
 			return (rit != this->rend()) ? reverse_iterator(this->erase(std::prev(rit.base()))) : rit;
