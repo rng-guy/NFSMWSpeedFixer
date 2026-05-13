@@ -70,7 +70,27 @@ namespace StreamParser
 	namespace Details
 	{
 
-		constexpr bool IsWhitespace(const char ch) noexcept
+		inline void SkipByteOrderMark(std::istream& stream)
+		{
+			if (stream.tellg() != 0) return; // not start of stream
+
+			constexpr size_t markSize = 3; // bytes
+
+			char buffer[markSize];
+			stream.read(buffer, markSize);
+
+			// Skip the first three bytes if the UTF-8 BOM is present
+			const auto numReads = static_cast<size_t>(stream.gcount());
+			if (std::string_view(buffer, numReads) == "\xEF\xBB\xBF") return;
+
+			// Reset stream
+			stream.clear();
+			stream.seekg(0);
+		}
+
+
+
+		[[nodiscard]] constexpr bool IsWhitespace(const char ch) noexcept
 		{
 			switch (ch)
 			{
@@ -88,7 +108,7 @@ namespace StreamParser
 
 		
 		template <char ...chars>
-		consteval bool AreUniqueNonWhitespace() noexcept
+		[[nodiscard]] consteval bool AreUniqueNonWhitespace() noexcept
 		{
 			std::array<bool, std::numeric_limits<unsigned char>::max() + 1> seen = {};
 
@@ -102,22 +122,14 @@ namespace StreamParser
 
 
 
-		constexpr std::string_view GetEnclosed(const std::string_view view) noexcept
-		{
-			return (view.size() > 2) ? view.substr(1, view.length() - 2) : std::string_view();
-		}
-
-
-
-		constexpr std::string_view TrimLeft(const std::string_view view) noexcept
+		[[nodiscard]] constexpr std::string_view TrimLeft(const std::string_view view) noexcept
 		{
 			const size_t numChars = std::distance(view.begin(), std::ranges::find_if_not(view, IsWhitespace));
-
 			return view.substr(numChars);
 		}
 
 
-		constexpr std::string_view TrimRight(const std::string_view view) noexcept
+		[[nodiscard]] constexpr std::string_view TrimRight(const std::string_view view) noexcept
 		{
 			const auto   reversed = view | std::views::reverse;
 			const size_t numChars = std::distance(reversed.begin(), std::ranges::find_if_not(reversed, IsWhitespace));
@@ -126,7 +138,7 @@ namespace StreamParser
 		}
 
 
-		constexpr std::string_view Trim(const std::string_view view) noexcept
+		[[nodiscard]] constexpr std::string_view Trim(const std::string_view view) noexcept
 		{
 			return TrimRight(TrimLeft(view));
 		}
@@ -134,7 +146,7 @@ namespace StreamParser
 
 
 		template <size_t numSegments>
-		constexpr std::optional<std::array<std::string_view, numSegments>> Split
+		[[nodiscard]] constexpr std::optional<std::array<std::string_view, numSegments>> Split
 		(
 			const std::string_view source,
 			const char             separator
@@ -155,8 +167,7 @@ namespace StreamParser
 					if (endPosition == std::string_view::npos)
 					{
 						segments[segmentID++] = Trim(source.substr(startPosition));
-
-						break;
+						break; // no more segments left to parse
 					}
 
 					// The static analyser likes to complain about this despite the preceding bounds check
@@ -238,7 +249,6 @@ namespace StreamParser
 		noexcept(Concepts::AreAllocationFree<V>)
 	{
 		value = source;
-
 		return true;
 	}
 
@@ -251,7 +261,6 @@ namespace StreamParser
 		noexcept
 	{
 		value = source.c_str();
-
 		return true;
 	}
 
@@ -264,7 +273,6 @@ namespace StreamParser
 		noexcept
 	{
 		value = source;
-
 		return true;
 	}
 
@@ -280,8 +288,7 @@ namespace StreamParser
 	) 
 		noexcept(Concepts::AreAllocationFree<Vs...>)
 	{
-		bool allParsed = false;
-
+		bool             allParsed   = false;
 		constexpr size_t numSegments = sizeof...(Vs);
 
 		if (const auto segments = Details::Split<numSegments>(source, separator))
@@ -313,9 +320,33 @@ namespace StreamParser
 	{
 	private:
 
-		static constexpr std::string_view GetContent(const std::string_view line) noexcept
+		[[nodiscard]] static constexpr std::string_view GetContent(const std::string_view line) noexcept
 		{
 			return Details::Trim(line.substr(0, line.find(comment)));
+		}
+
+
+		[[nodiscard]] static constexpr std::optional<std::string_view> GetSection(const std::string_view content) noexcept
+		{
+			if (content.starts_with(start) and content.ends_with(end))
+				return Details::Trim(content.substr(1, content.length() - 2));
+
+			return std::nullopt; // not section
+		}
+
+
+		[[nodiscard]] static constexpr std::optional<std::pair<std::string_view, std::string_view>> GetPair(const std::string_view content) noexcept
+		{
+			const size_t firstAssign = content.find(assign);
+			if (firstAssign == std::string_view::npos) return std::nullopt; // missing delimiter
+
+			const std::string_view key = Details::TrimRight(content.substr(0, firstAssign));
+			if (key.empty()) return std::nullopt; // missing key
+
+			const std::string_view value = Details::TrimLeft(content.substr(firstAssign + 1));
+			if (value.empty()) return std::nullopt; // missing value
+
+			return std::pair(key, value);
 		}
 
 
@@ -357,12 +388,7 @@ namespace StreamParser
 
 	public:
 
-		// For external access (e.g. inspection)
-		static constexpr char commentStart    = comment;
-		static constexpr char valueSeparator  = separator;
-		static constexpr char valueAssignment = assign;
-		static constexpr char sectionStart    = start;
-		static constexpr char sectionEnd      = end;
+		Parser() = default;
 
 
 		// Invalidates retrieved const char* and string_view
@@ -376,6 +402,7 @@ namespace StreamParser
 
 			Section* currentSection = nullptr;
 
+			Details::SkipByteOrderMark(stream); // seriously, screw Notepad
 			this->sections.reserve(this->sections.size() + sectionCapacity);
 
 			while (std::getline(stream, line))
@@ -383,48 +410,28 @@ namespace StreamParser
 				if (line.empty()) continue;
 
 				const std::string_view content = this->GetContent(line);
-				if (content.empty()) continue;
+				if (content.empty()) continue; // only whitespace or comment
 
-				// Check for new section
-				if (content.starts_with(start))
+				if (const auto section = this->GetSection(content))
 				{
-					if (content.ends_with(end))
+					if (not section->empty())
 					{
-						const std::string_view section = Details::Trim(Details::GetEnclosed(content));
+						const auto [pair, wasAdded] = this->sections.try_emplace(*section);
 
-						if (not section.empty())
-						{
-							const auto [pair, wasAdded] = this->sections.try_emplace(section);
+						if (wasAdded)
+							pair->second.reserve(pairCapacityPerSection);
 
-							if (wasAdded)
-								pair->second.reserve(pairCapacityPerSection);
-
-							currentSection = &(pair->second);
-						}
-						else currentSection = nullptr; // empty
+						currentSection = &(pair->second);
 					}
-					else currentSection = nullptr; // mangled
-
-					continue;
+					else currentSection = nullptr; // empty section name
 				}
-				else if (not currentSection) continue;
-
-				// Parse key-value pair
-				const size_t firstAssign = content.find(assign);
-				if (firstAssign == std::string_view::npos) continue;
-
-				const std::string_view key = Details::TrimRight(content.substr(0, firstAssign));
-				if (key.empty()) continue;
-					
-				const std::string_view value = Details::TrimLeft(content.substr(firstAssign + 1));
-				if (value.empty()) continue;
-
-				currentSection->try_emplace(key, value);
+				else if (currentSection)
+				{
+					if (const auto pair = this->GetPair(content))
+						currentSection->try_emplace(pair->first, pair->second);
+				}
 			}
 		}
-
-
-		Parser() = default;
 
 
 		Parser
@@ -529,7 +536,7 @@ namespace StreamParser
 		}
 
 
-		const auto& GetSections() const noexcept
+		[[nodiscard]] const Sections& GetSections() const noexcept
 		{
 			return this->sections;
 		}

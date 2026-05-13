@@ -4,6 +4,9 @@
 #if !defined(_MSC_VER)
 #error "SpeedFixer requires MSVC."
 
+#elif (_MSC_VER < 1930)
+#error "SpeedFixer requires Visual Studio 2022 or newer."
+
 #elif !defined(_WIN32) || defined(_WIN64)
 #error "SpeedFixer requires 32-bit Windows."
 
@@ -115,7 +118,7 @@ struct Bounds
 	std::optional<T> upper;
 
 
-	constexpr void Enforce(T& value) const noexcept
+	void Enforce(T& value) const
 	{
 		if (this->lower and (value < *(this->lower)))
 			value = *(this->lower);
@@ -134,9 +137,7 @@ bool ParseFromFile
 	const std::string_view key,
 	T&                     value,
 	const Bounds<T>        limits = {}
-) 
-	noexcept
-{
+) {
 	const bool isValid = Parser::GetValues<T>(section, key, value);
 
 	limits.Enforce(value);
@@ -226,7 +227,7 @@ static void __cdecl InitialiseSpeedFixer
 	// Call original function first
 	OriginalFunction(numArgs, argArray);
 
-	// Apply hooked logic last
+	// Global mod parameters
 	if (not ParseParameters()) return; // missing file; disable mod
 
 	// Code modifications (activation)
@@ -284,8 +285,7 @@ BOOL WINAPI DllMain
 		if (MemoryTools::GetEntryPoint() != 0x3C4040)
 		{
 			MessageBoxA(NULL, "This .exe isn't compatible with SpeedFixer.\nSee SpeedFixer's README for help.", "NFSMW SpeedFixer", MB_ICONERROR);
-
-			return FALSE;
+			return FALSE; // should never happen (assuming the user has actually read the README, which... yeah...)
 		}
 
 		InitialiseSpeedFixerOriginal = MemoryTools::MakeCallHook(0x6665B4, InitialiseSpeedFixer); // InitializeEverything (0x665FC0)

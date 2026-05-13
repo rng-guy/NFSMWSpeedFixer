@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.02) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.03) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -22,8 +22,8 @@ SpeedFixer lets you customise the speedbreaker mechanic:
  • the amount of steering drag.
 
 The SECTIONS BELOW address these questions in detail:
- 1) • What mods are (in)compatible with SpeedFixer?
- 2) • How do I install SpeedFixer for my game?
+ 1) • How do I install SpeedFixer for my game?
+ 2) • Which mods are (in)compatible with SpeedFixer?
  3) • How may I share or bundle SpeedFixer?
  4) • What changed in each version of SpeedFixer?
 
@@ -32,23 +32,11 @@ The SECTIONS BELOW address these questions in detail:
 
 
 
-── ■ │ 1 - WHAT MODS ARE (IN)COMPATIBLE WITH SPEEDFIXER? │ ■ ──────────────────────────────────────
-
-All VLTED AND BINARY MODS should be fully compatible with all SpeedFixer configurations.
-
-Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations.
-SpeedFixer overrides all speedbreaker features of the "NFSMW ExtraOptions" mod by ExOptsTeam.
-
-
-
-
-
-
-── ■ │ 2 - HOW DO I INSTALL SPEEDFIXER FOR MY GAME? │ ■ ───────────────────────────────────────────
+── ■ │ 1 - HOW DO I INSTALL SPEEDFIXER FOR MY GAME? │ ■ ───────────────────────────────────────────
 
 BEFORE INSTALLING SpeedFixer:
  1) • make sure your original copy of the game wasn't a repack or came pre-modified in any way,
- 2) • read and understand the two sections about mod (in)compatibilities above,
+ 2) • read and understand the section about mod (in)compatibilities below,
  3) • make sure your game's "speed.exe" is compatible (i.e. 5.75 MB / 6,029,312 bytes large), and
  4) • install an .asi loader or any mod with one (e.g. the "WideScreenFix" mod by ThirteenAG).
 
@@ -63,6 +51,18 @@ TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 
 TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
 If you update from a version older than v1.02.00, replace the old configuration file.
+
+
+
+
+
+
+── ■ │ 2 - WHICH MODS ARE (IN)COMPATIBLE WITH SPEEDFIXER? │ ■ ─────────────────────────────────────
+
+All VLTED AND BINARY MODS should be fully compatible with all SpeedFixer configurations.
+
+Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations.
+SpeedFixer overrides all speedbreaker features of the "NFSMW ExtraOptions" mod by ExOptsTeam.
 
 
 
@@ -91,3 +91,4 @@ v1.00.00: Initial release
    02.00: Improved readability by renaming some more parameters
       01: Simplified internal configuration-file parser
       02: Added unlimited-duration feature
+      03: Improved some mod internals
