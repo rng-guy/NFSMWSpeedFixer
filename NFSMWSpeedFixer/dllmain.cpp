@@ -21,9 +21,14 @@
 
 // Project includes ---------------------------------------------------------------------------------------------------------------------------------
 
+#include <Windows.h>
+
+#ifdef _DEBUG
+#include <debugapi.h>
+#endif
+
 #include <fstream>
 #include <optional>
-#include <Windows.h>
 #include <filesystem>
 #include <string_view>
 
@@ -226,6 +231,11 @@ static void __cdecl InitialiseSpeedFixer
 
 	// Call original function first
 	OriginalFunction(numArgs, argArray);
+
+	// Halt until debugger is attached
+	#ifdef _DEBUG
+	while (not IsDebuggerPresent());
+	#endif
 
 	// Global mod parameters
 	if (not ParseParameters()) return; // missing file; disable mod
