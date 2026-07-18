@@ -114,16 +114,15 @@ float steeringScale;
 
 
 
-// Parsing functions --------------------------------------------------------------------------------------------------------------------------------
+// Parsing structs and functions --------------------------------------------------------------------------------------------------------------------
 
-template <typename T>
 struct Bounds
 {
-	std::optional<T> lower;
-	std::optional<T> upper;
+	std::optional<float> lower;
+	std::optional<float> upper;
 
 
-	void Enforce(T& value) const
+	void Enforce(float& value) const
 	{
 		if (this->lower and (value < *(this->lower)))
 			value = *(this->lower);
@@ -135,15 +134,14 @@ struct Bounds
 
 
 
-template <typename T>
-bool ParseFromFile
+static bool ParseFloat
 (
 	const auto&            section,
 	const std::string_view key,
-	T&                     value,
-	const Bounds<T>        limits = {}
+	float&                 value,
+	const Bounds           limits = {}
 ) {
-	const bool isValid = Parser::GetValues<T>(section, key, value);
+	const bool isValid = Parser::GetValues<float>(section, key, value);
 
 	limits.Enforce(value);
 
@@ -171,9 +169,9 @@ static bool ParseParameters()
 	{
 		const auto& section = foundSection->second;
 
-		ParseFromFile<float>(section, "minCarSpeed", minSpeedToActivate, {0.f});
+		ParseFloat(section, "minCarSpeed", minSpeedToActivate, {0.f});
 
-		durationEnabled = ParseFromFile<float>(section, "maxDuration", maxDuration, {.001f});
+		durationEnabled = ParseFloat(section, "maxDuration", maxDuration, {.001f});
 	}
 	else durationEnabled = false;
 
@@ -184,14 +182,14 @@ static bool ParseParameters()
 	{
 		const auto& section = foundSection->second;
 
-		const bool speedDefined = ParseFromFile<float>(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
-		const bool timeDefined  = ParseFromFile<float>(section, "rechargeTime", rechargeTime,       {.001f});
+		const bool speedDefined = ParseFloat(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
+		const bool timeDefined  = ParseFloat(section, "rechargeTime", rechargeTime,       {.001f});
 
 		passiveEnabled = (speedDefined or timeDefined);
 
-		ParseFromFile<float>(section, "activeScale",   activeScale,   {0.f});
-		ParseFromFile<float>(section, "minDriftSpeed", minDriftSpeed, {0.f});
-		ParseFromFile<float>(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+		ParseFloat(section, "activeScale",   activeScale,   {0.f});
+		ParseFloat(section, "minDriftSpeed", minDriftSpeed, {0.f});
+		ParseFloat(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
 	}
 	else passiveEnabled = false;
 
@@ -202,13 +200,13 @@ static bool ParseParameters()
 	{
 		const auto& section = foundSection->second;
 
-		ParseFromFile<float>(section, "timeScale",        timeScale,        {1.f});
-		ParseFromFile<float>(section, "carMassScale",     carMassScale,     {0.f});
-		ParseFromFile<float>(section, "gravityScale",     gravityScale);
-		ParseFromFile<float>(section, "frictionBoost",    frictionBoost,    {0.f});
-		ParseFromFile<float>(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
-		ParseFromFile<float>(section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
-		ParseFromFile<float>(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
+		ParseFloat(section, "timeScale",        timeScale,        {1.f});
+		ParseFloat(section, "carMassScale",     carMassScale,     {0.f});
+		ParseFloat(section, "gravityScale",     gravityScale);
+		ParseFloat(section, "frictionBoost",    frictionBoost,    {0.f});
+		ParseFloat(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+		ParseFloat(section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
+		ParseFloat(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
 	}
 
 	return true;
@@ -292,7 +290,7 @@ BOOL WINAPI DllMain
 ) {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
-		if (MemoryTools::GetEntryPoint() != 0x3C4040)
+		if (MemoryTools::GetEntryPoint() != 0x3C4040) // .exe-dependent entry point
 		{
 			MessageBoxA(NULL, "This .exe isn't compatible with SpeedFixer.\nSee SpeedFixer's README for help.", "NFSMW SpeedFixer", MB_ICONERROR);
 			return FALSE; // should never happen (assuming the user has actually read the README, which... yeah...)

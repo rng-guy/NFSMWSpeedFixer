@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.03) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.04) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -61,8 +61,8 @@ If you update from a version older than v1.02.00, replace the old configuration 
 
 All VLTED AND BINARY MODS should be fully compatible with all SpeedFixer configurations.
 
-Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations.
-SpeedFixer overrides all speedbreaker features of the "NFSMW ExtraOptions" mod by ExOptsTeam.
+Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations. If you
+use the "NFSMW ExtraOptions" mod by ExOptsTeam, SpeedFixer overrides all its Speedbreaker features.
 
 
 
@@ -92,3 +92,4 @@ v1.00.00: Initial release
       01: Simplified internal configuration-file parser
       02: Added unlimited-duration feature
       03: Improved some mod internals
+      04: Did some more internal cleanup

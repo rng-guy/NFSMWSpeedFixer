@@ -45,7 +45,7 @@ The **sections below** address these questions in detail:
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and unzip the `NfSMW_SpeedFixer_v1.02.3.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest);
+1. download and unzip the `NfSMW_SpeedFixer_v1.02.4.7z` file from its [release page](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest);
 2. if it doesn't exist already, create a `scripts` folder in your game's installation folder;
 3. copy the contents of SpeedFixer's `scripts` folder to your game's `scripts` folder; and
 4. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
@@ -54,11 +54,7 @@ The **sections below** address these questions in detail:
 
 **After installing** SpeedFixer, edit its `NFSMWSpeedFixerSettings.ini` file to your liking.
 
-&nbsp;
-
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
-
-&nbsp;
 
 **To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.02.00, replace the old configuration file.
 
@@ -74,9 +70,7 @@ The **sections below** address these questions in detail:
 
 All **[VltEd](https://nfs-tools.blogspot.com/2019/02/nfs-vlted-v46-released.html) and [Binary](https://github.com/SpeedReflect/Binary/releases) mods** should be fully compatible with all SpeedFixer configurations. 
 
-&nbsp;
-
-Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer configurations. SpeedFixer overrides all speedbreaker features of the [NFSMW ExtraOptions](https://github.com/ExOptsTeam/NFSMWExOpts/releases) mod by ExOptsTeam.
+Almost all  **other `.asi` mods** should be fully compatible with all SpeedFixer configurations. If you use the [NFSMW ExtraOptions](https://github.com/ExOptsTeam/NFSMWExOpts/releases) mod by ExOptsTeam, SpeedFixer overrides all its Speedbreaker features.
 
 &nbsp;
 
