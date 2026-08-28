@@ -1,7 +1,7 @@
 
 ── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.04) │ ■ ───────────────────────────────────────────────────
 
-VIEW THIS DOCUMENT with better formatting on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
+VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
 SpeedFixer lets you customise the speedbreaker mechanic:
  • the car speed required to activate it,
