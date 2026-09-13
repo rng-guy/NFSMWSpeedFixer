@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.03.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.03.01) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -35,15 +35,14 @@ The SECTIONS BELOW address these questions in detail:
 ── ■ │ 1 - HOW DO I INSTALL SPEEDFIXER FOR MY GAME? │ ■ ───────────────────────────────────────────
 
 BEFORE INSTALLING SpeedFixer:
- 1) • make sure your original copy of the game wasn't a repack or came pre-modified in any way,
+ 1) • make sure your original copy of the game isn't a repack or came pre-modified in any way,
  2) • read and understand the section about mod (in)compatibilities below,
  3) • make sure your game's "speed.exe" is compatible (i.e. 5.75 MB / 6,029,312 bytes large), and
  4) • install an .asi loader or any mod with one (e.g. the "WideScreenFix" mod by ThirteenAG).
 
 TO INSTALL SpeedFixer:
- 1) • if it doesn't exist already, create a "scripts" folder in your game's installation folder;
- 2) • copy the contents of SpeedFixer's "scripts" folder to your game's "scripts" folder; and
- 3) • if SpeedFixer's .asi file gets flagged by your antivirus software, whitelist the file.
+ 1) • copy SpeedFixer's "scripts" folder to your game's folder (overwrite if needed); and
+ 2) • if SpeedFixer's .asi file gets flagged by your antivirus software, whitelist the file.
 
 AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your liking.
 
@@ -94,3 +93,4 @@ v1.00.00: Initial release
       03: Improved some mod internals
 
    03.00: Improved accuracy of time-dilation transition speed
+      01: Fixed some new documentation oversights (rip)

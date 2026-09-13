@@ -37,7 +37,7 @@ The **sections below** address these questions in detail:
 # 1 - How do I install SpeedFixer for my game?
 
 **Before installing** SpeedFixer:
-1. make sure your original copy of the game wasn't a repack or came pre-modified in any way,
+1. make sure your original copy of the game isn't a repack or came pre-modified in any way,
 2. read and understand the section about [mod (in)compatibilities](#2---which-mods-are-incompatible-with-speedfixer) below,
 3. make sure your game's `speed.exe` is compatible (i.e. 5.75 MB / 6,029,312 bytes large), and
 4. install an `.asi` loader or any mod with one (e.g. the [WideScreenFix](https://github.com/ThirteenAG/WidescreenFixesPack/releases/tag/nfsmw) mod by ThirteenAG).
@@ -45,10 +45,9 @@ The **sections below** address these questions in detail:
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and unzip the [`NfSMW_SpeedFixer_v1.03.0.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
-2. if it doesn't exist already, create a `scripts` folder in your game's installation folder;
-3. copy the contents of SpeedFixer's `scripts` folder to your game's `scripts` folder; and
-4. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
+1. download and extract the [`NfSMW_SpeedFixer_v1.03.1.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
+2. copy the SpeedFixer's `scripts` folder to your game's folder (overwrite if needed); and
+3. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
 
 &nbsp;
 
