@@ -159,16 +159,16 @@ namespace MemoryTools
 
 		inline void MakeRangeJMP
 		(
+			const address target,
 			const address start,
-			const address end,
-			const address target
+			const address end
 		) {
 			const address jumpTargetOffset = start            + sizeof(byte);
 			const address nextInstruction  = jumpTargetOffset + sizeof(ptrdiff_t);
 
 			MakeRangeNOP(start, end);
 
-			Write<byte>     (0xE9, {start}); // jump near, relative
+			Write<byte>     (0xE9,                     {start}); // jump near, relative
 			Write<ptrdiff_t>(target - nextInstruction, {jumpTargetOffset});
 		}
 	}
@@ -199,13 +199,40 @@ namespace MemoryTools
 
 
 
+
+
+	// Assembly-detouring helpers -------------------------------------------------------------------------------------------------------------------
+
+	#define MT_DETAILS_BEGIN(name) asm##name##Begin
+
+	#define MT_DETAILS_END(name) asm##name##End
+
+	#define MT_DETAILS_ADDRESS(variable, value) constexpr MemoryTools::address variable = value
+
+	#define MT_DETAILS_RANGE(name, begin, end) MT_DETAILS_ADDRESS(MT_DETAILS_BEGIN(name), begin); MT_DETAILS_ADDRESS(MT_DETAILS_END(name), end)
+
+
+
+
+
+	// Assembly detouring ---------------------------------------------------------------------------------------------------------------------------
+
+	#define ASSEMBLY_DETOUR(name, begin, end) MT_DETAILS_RANGE(name, begin, end); __declspec(naked) void name()
+
+	#define EXIT_ASSEMBLY_DETOUR(name) jmp dword ptr [MT_DETAILS_END(name)]
+
+	#define PATCH_ASSEMBLY_DETOUR(name) MemoryTools::MakeRangeJMP<MT_DETAILS_BEGIN(name), MT_DETAILS_END(name)>(name)
+
+
+
 	template <address start, address end>
 	inline void MakeRangeJMP(const address target)
 	{
 		static_assert(end >= start + sizeof(byte) + sizeof(ptrdiff_t), "Cannot accommodate JMP");
 
-		Details::MakeRangeJMP(start, end, target);
+		Details::MakeRangeJMP(target, start, end);
 	}
+
 
 
 	template <address start, address end, typename T>
@@ -219,22 +246,29 @@ namespace MemoryTools
 
 
 
+	// Function-hooking helpers ---------------------------------------------------------------------------------------------------------------------
+
+	#define MT_DETAILS_ORIGINAL(name) name##Original
+
+
+
+
+
 	// Function hooking -----------------------------------------------------------------------------------------------------------------------------
+
+	#define HOOK_ORIGINAL(name) MemoryTools::address MT_DETAILS_ORIGINAL(name) = 0x0
+
+	#define CALL_HOOK_ORIGINAL(name, ...) MemoryTools::AsFunction<decltype(name)>(MT_DETAILS_ORIGINAL(name))(__VA_ARGS__)
+
+	#define PATCH_HOOK_FUNCTION(name, target) MT_DETAILS_ORIGINAL(name) = MemoryTools::ReplaceCall(target, name)
+
+
 
 	inline address ReplaceCall
 	(
 		const address callSite,
 		const address newTarget
 	) {
-		const byte opcode = AsReference<byte>(callSite);
-
-		if (opcode != 0xE8) // not call (near, relative)
-		{
-			MessageBoxA(NULL, "Invalid hooking target. Contact the mod author.", "Fatal hooking error", MB_ICONERROR);
-
-			TerminateProcess(GetCurrentProcess(), 1); // if this ever happens, the mod is broken and very likely to crash anyway
-		}
-
 		const address callOffset      = callSite   + sizeof(byte);
 		const address nextInstruction = callOffset + sizeof(ptrdiff_t);
 

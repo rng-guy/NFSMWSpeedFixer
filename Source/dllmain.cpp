@@ -75,6 +75,9 @@ float minSlipRad;   // rad
 float timeScale;    // unity
 float gravityBoost; // mps / second
 
+float activationScale;   // unity
+float deactivationScale; // unity
+
 float frictionScale;    // unity
 float maxSteeringAngle; // degrees
 
@@ -198,6 +201,9 @@ static void InitialisePhysics(const Parser& parser)
 {
 	timeScale = 4.f; // unity
 
+	activationScale   = 2.f; // unity
+	deactivationScale = .5f; // unity
+
 	float carMassScale = 2.f; // unity
 	float gravityScale = 3.f; // unity
 
@@ -222,20 +228,27 @@ static void InitialisePhysics(const Parser& parser)
 		Extract(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
 	}
 
+	const float gapRatio = (1.f - 1.f / timeScale) / .75f;
+
+	activationScale   *= gapRatio;
+	deactivationScale *= gapRatio;
+
 	gravityBoost     = gravity * (gravityScale - 1.f);
 	frictionScale    = frictionBoost / 100.f;
 	aerodynamicScale = (100.f - aerodynamicDrag) / 100.f;
 	steeringScale    = (85.f - steeringDrag) / 100.f;
 
 	// Code changes
-	MemoryTools::Write<float*>(&timeScale,        {0x472C53});
-	MemoryTools::Write<float> (1.f / timeScale,   {0x6F4DD4});
-	MemoryTools::Write<float> (carMassScale,      {0x901AEC});
-	MemoryTools::Write<float*>(&gravityBoost,     {0x6B1F17});
-	MemoryTools::Write<float*>(&frictionScale,    {0x6A9E37});
-	MemoryTools::Write<float*>(&maxSteeringAngle, {0x69E990});
-	MemoryTools::Write<float*>(&aerodynamicScale, {0x6B201E});
-	MemoryTools::Write<float*>(&steeringScale,    {0x6B1FA3});
+	MemoryTools::Write<float*>(&timeScale,         {0x472C53});
+	MemoryTools::Write<float> (1.f / timeScale,    {0x6F4DD4});
+	MemoryTools::Write<float*>(&activationScale,   {0x6F4DC8});
+	MemoryTools::Write<float*>(&deactivationScale, {0x6F4DF4});
+	MemoryTools::Write<float> (carMassScale,       {0x901AEC});
+	MemoryTools::Write<float*>(&gravityBoost,      {0x6B1F17});
+	MemoryTools::Write<float*>(&frictionScale,     {0x6A9E37});
+	MemoryTools::Write<float*>(&maxSteeringAngle,  {0x69E990});
+	MemoryTools::Write<float*>(&aerodynamicScale,  {0x6B201E});
+	MemoryTools::Write<float*>(&steeringScale,     {0x6B1FA3});
 }
 
 

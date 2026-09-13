@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.02.04) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.03.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -92,4 +92,5 @@ v1.00.00: Initial release
       01: Simplified internal configuration-file parser
       02: Added unlimited-duration feature
       03: Improved some mod internals
-      04: Did some more internal cleanup
+
+   03.00: Improved accuracy of time-dilation transition speed
