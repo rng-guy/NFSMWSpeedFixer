@@ -41,7 +41,7 @@ BEFORE INSTALLING SpeedFixer:
  4) • install an .asi loader or any mod with one (e.g. the "WideScreenFix" mod by ThirteenAG).
 
 TO INSTALL SpeedFixer:
- 1) • copy SpeedFixer's "scripts" folder to your game's folder (overwrite if needed); and
+ 1) • copy SpeedFixer's "scripts" folder to your game's folder, replacing existing files; and
  2) • if SpeedFixer's .asi file gets flagged by your antivirus software, whitelist the file.
 
 AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your liking.
