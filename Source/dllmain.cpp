@@ -228,10 +228,10 @@ static void InitialisePhysics(const Parser& parser)
 		Extract(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
 	}
 
-	const float gapRatio = (1.f - 1.f / timeScale) / .75f;
+	const float complementRatio = (1.f - 1.f / timeScale) / .75f;
 
-	activationScale   *= gapRatio;
-	deactivationScale *= gapRatio;
+	activationScale   *= complementRatio;
+	deactivationScale *= complementRatio;
 
 	gravityBoost     = gravity * (gravityScale - 1.f);
 	frictionScale    = frictionBoost / 100.f;
