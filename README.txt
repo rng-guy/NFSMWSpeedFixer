@@ -96,4 +96,4 @@ v1.00.00: Initial release
    03.00: Improved accuracy of time-dilation transition speed
       01: Fixed some new documentation oversights (rip)
 
-   04.00: Added feature to customise dilation-transition speed
+   04.00: Added dilation-transition feature
