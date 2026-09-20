@@ -106,10 +106,10 @@ struct Bounds
 
 static bool Extract
 (
-	const Parser::Section& section,
-	const std::string_view key,
-	float&                 value,
-	const Bounds&          limits = {}
+	const Parser::Section* const section,
+	const std::string_view       key,
+	float&                       value,
+	const Bounds&                limits = {}
 ) {
 	if (not Parser::ExtractValues<float>(section, key, value)) return false;
 
@@ -134,8 +134,8 @@ static void InitialiseActivation(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Activation"))
 	{
-		Extract(*section, "minCarSpeed", minSpeedToActivate, {0.f});
-		hasFiniteDuration = Extract(*section, "maxDuration", maxDuration, {.001f});
+		Extract(section, "minCarSpeed", minSpeedToActivate, {0.f});
+		hasFiniteDuration = Extract(section, "maxDuration", maxDuration, {.001f});
 	}
 
 	maxDurationScale = 1.f / maxDuration;
@@ -165,14 +165,14 @@ static void InitialiseRecharging(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Recharging"))
 	{
-		const bool speedDefined = Extract(*section, "minCarSpeed",  minSpeedToRecharge, {0.f});
-		const bool timeDefined  = Extract(*section, "rechargeTime", rechargeTime,       {.001f});
+		const bool speedDefined = Extract(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
+		const bool timeDefined  = Extract(section, "rechargeTime", rechargeTime,       {.001f});
 
 		canRechargePassively = (speedDefined or timeDefined);
 
-		Extract(*section, "activeScale",   activeScale,   {0.f});
-		Extract(*section, "minDriftSpeed", minDriftSpeed, {0.f});
-		Extract(*section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+		Extract(section, "activeScale",   activeScale,   {0.f});
+		Extract(section, "minDriftSpeed", minDriftSpeed, {0.f});
+		Extract(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
 	}
 
 	minDriftBase = minDriftSpeed / mps2kph;
@@ -214,18 +214,18 @@ static void InitialisePhysics(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Physics"))
 	{
-		Extract(*section, "timeScale",    timeScale,    {1.f});
-		Extract(*section, "carMassScale", carMassScale, {0.f});
-		Extract(*section, "gravityScale", gravityScale);
+		Extract(section, "timeScale",    timeScale,    {1.f});
+		Extract(section, "carMassScale", carMassScale, {0.f});
+		Extract(section, "gravityScale", gravityScale);
 
-		Extract(*section, "toDilationScale",   toDilationScale,   {.001f});
-		Extract(*section, "fromDilationScale", fromDilationScale, {.001f});
+		Extract(section, "toDilationScale",   toDilationScale,   {.001f});
+		Extract(section, "fromDilationScale", fromDilationScale, {.001f});
 
-		Extract(*section, "frictionBoost",    frictionBoost,    {0.f});
-		Extract(*section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+		Extract(section, "frictionBoost",    frictionBoost,    {0.f});
+		Extract(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
 
-		Extract(*section, "aeroDragReduction",  aeroDragReduction,  {0.f,  100.f});
-		Extract(*section, "steerDragReduction", steerDragReduction, {15.f, 100.f});
+		Extract(section, "aeroDragReduction",  aeroDragReduction,  {0.f,  100.f});
+		Extract(section, "steerDragReduction", steerDragReduction, {15.f, 100.f});
 	}
 
 	const float timeRate = 1.f / timeScale; // unity
