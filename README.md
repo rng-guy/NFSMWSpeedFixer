@@ -4,20 +4,21 @@
 SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: Most Wanted* (2005):
 * the car speed required to activate it,
 * whether it has a limited active duration,
-* up to how long it can last per activation,
-* whether it can recharge passively over time,
-* the car speed required for passive recharging,
+* its maximum active duration when fully charged,
+* whether you can recharge it passively over time,
+* the car speed required to trigger passive recharging,
 * how long fully passive recharging takes to complete,
 * how effective active recharging (by drifting) is,
-* the drifting speed required for active recharging,
-* the slip angle required for active recharging,
-* the slowdown factor for in-game time,
-* the car-mass scale for collisions,
-* the gravity scale for downforce,
-* the boost to steering friction,
-* the maximum steering angle,
-* the amount of aerodynamic drag, and
-* the amount of steering drag.
+* the drifting speed required to trigger active recharging,
+* the slip angle required to trigger active recharging,
+* the dilation multiplier for in-game time,
+* the car-mass multiplier for collisions,
+* the time-dilation transition speed,
+* the gravity multiplier for downforce,
+* the boost to front-wheel steering friction,
+* the maximum front-wheel steering angle,
+* the reduction of aerodynamic drag, and
+* the reduction of steering drag.
 
 &nbsp;
 
@@ -45,7 +46,7 @@ The **sections below** address these questions in detail:
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and extract the [`NfSMW_SpeedFixer_v1.03.1.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
+1. download and extract the [`NfSMW_SpeedFixer_v1.04.0.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
 2. copy SpeedFixer's `scripts` folder to your game's folder, replacing existing files; and
 3. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
 
@@ -55,7 +56,7 @@ The **sections below** address these questions in detail:
 
 **To uninstall** SpeedFixer, remove its files from your game's `scripts` folder.
 
-**To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.02.00, replace the old configuration file.
+**To update** SpeedFixer, uninstall it and repeat the installation process above. If you update from a version older than v1.04.00, replace the old configuration file.
 
 &nbsp;
 

@@ -38,6 +38,9 @@
     <None Include="Config\NFSMWSpeedFixerSettings.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="Source\cpp.hint">
+      <Filter>Source</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt">

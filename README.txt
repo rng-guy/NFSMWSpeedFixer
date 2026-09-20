@@ -1,25 +1,26 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.03.01) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.04.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
 SpeedFixer lets you customise the speedbreaker mechanic:
  • the car speed required to activate it,
  • whether it has a limited active duration,
- • up to how long it can last per activation,
- • whether it can recharge passively over time,
- • the car speed required for passive recharging,
+ • its maximum active duration when fully charged,
+ • whether you can recharge it passively over time,
+ • the car speed required to trigger passive recharging,
  • how long fully passive recharging takes to complete,
  • how effective active recharging (by drifting) is,
- • the drifting speed required for active recharging,
- • the slip angle required for active recharging,
- • the slowdown factor for in-game time,
- • the car-mass scale for collisions,
- • the gravity scale for downforce,
- • the boost to steering friction,
- • the maximum steering angle,
- • the amount of aerodynamic drag, and
- • the amount of steering drag.
+ • the drifting speed required to trigger active recharging,
+ • the slip angle     required to trigger active recharging,
+ • the dilation multiplier for in-game time,
+ • the car-mass multiplier for collisions,
+ • the gravity  multiplier for downforce,
+ • the time-dilation transition speed,
+ • the boost to front-wheel steering friction,
+ • the maximum  front-wheel steering angle,
+ • the reduction of aerodynamic drag, and
+ • the reduction of steering    drag.
 
 The SECTIONS BELOW address these questions in detail:
  1) • How do I install SpeedFixer for my game?
@@ -49,7 +50,7 @@ AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your
 TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 
 TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
-If you update from a version older than v1.02.00, replace the old configuration file.
+If you update from a version older than v1.04.00, replace the old configuration file.
 
 
 
@@ -94,3 +95,5 @@ v1.00.00: Initial release
 
    03.00: Improved accuracy of time-dilation transition speed
       01: Fixed some new documentation oversights (rip)
+
+   04.00: Added feature to customise dilation-transition speed

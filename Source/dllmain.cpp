@@ -41,8 +41,6 @@
 
 // Aliases ------------------------------------------------------------------------------------------------------------------------------------------
 
-using MemoryTools::AsFunction;
-
 using MemoryTools::byte;
 using MemoryTools::address;
 
@@ -52,11 +50,8 @@ using Parser = StreamParser::Parser<>;
 
 
 
-// Parameters ---------------------------------------------------------------------------------------------------------------------------------------
+// Mod data -----------------------------------------------------------------------------------------------------------------------------------------
 
-const std::filesystem::path configFile = "scripts/NFSMWSpeedFixerSettings.ini";
-
-// Constants
 constexpr float kph2mph = .6214f; // mph / kph
 constexpr float mps2kph = 3.6f;   // kph / mps
 constexpr float deg2rad = .0175f; // rad / deg
@@ -81,8 +76,8 @@ float deactivationScale; // unity
 float frictionScale;    // unity
 float maxSteeringAngle; // degrees
 
-float aerodynamicScale; // unity
-float steeringScale;    // unity
+float aeroDragScale;  // unity
+float steerDragScale; // unity
 
 
 
@@ -111,16 +106,16 @@ struct Bounds
 
 static bool Extract
 (
-	const Parser::Section* const section,
-	const std::string_view       key,
-	float&                       value,
-	const Bounds                 limits = {}
+	const Parser::Section& section,
+	const std::string_view key,
+	float&                 value,
+	const Bounds&          limits = {}
 ) {
-	const bool isExtracted = Parser::ExtractValues<float>(section, key, value);
+	if (not Parser::ExtractValues<float>(section, key, value)) return false;
 
 	limits.Enforce(value);
 
-	return isExtracted;
+	return true;
 }
 
 
@@ -139,9 +134,8 @@ static void InitialiseActivation(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Activation"))
 	{
-		Extract(section, "minCarSpeed", minSpeedToActivate, {0.f});
-
-		hasFiniteDuration = Extract(section, "maxDuration", maxDuration, {.001f});
+		Extract(*section, "minCarSpeed", minSpeedToActivate, {0.f});
+		hasFiniteDuration = Extract(*section, "maxDuration", maxDuration, {.001f});
 	}
 
 	maxDurationScale = 1.f / maxDuration;
@@ -171,14 +165,14 @@ static void InitialiseRecharging(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Recharging"))
 	{
-		const bool speedDefined = Extract(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
-		const bool timeDefined  = Extract(section, "rechargeTime", rechargeTime,       {.001f});
+		const bool speedDefined = Extract(*section, "minCarSpeed",  minSpeedToRecharge, {0.f});
+		const bool timeDefined  = Extract(*section, "rechargeTime", rechargeTime,       {.001f});
 
 		canRechargePassively = (speedDefined or timeDefined);
 
-		Extract(section, "activeScale",   activeScale,   {0.f});
-		Extract(section, "minDriftSpeed", minDriftSpeed, {0.f});
-		Extract(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+		Extract(*section, "activeScale",   activeScale,   {0.f});
+		Extract(*section, "minDriftSpeed", minDriftSpeed, {0.f});
+		Extract(*section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
 	}
 
 	minDriftBase = minDriftSpeed / mps2kph;
@@ -201,81 +195,98 @@ static void InitialisePhysics(const Parser& parser)
 {
 	timeScale = 4.f; // unity
 
-	activationScale   = 2.f; // unity
-	deactivationScale = .5f; // unity
-
 	float carMassScale = 2.f; // unity
 	float gravityScale = 3.f; // unity
+
+	float toDilationScale   = 1.f; // unity
+	float fromDilationScale = 1.f; // unity
+
+	activationScale   = 2.f; // unity
+	deactivationScale = .5f; // unity
 
 	float frictionBoost = 75.f; // percent
 
 	maxSteeringAngle = 60.f; // degrees
 
-	float aerodynamicDrag = 25.f; // percent
-	float steeringDrag    =  0.f; // percent
+	float aeroDragReduction  = 75.f;  // percent
+	float steerDragReduction = 100.f; // percent
 
 	// Extraction
 	if (const auto* const section = parser.GetSection("Speedbreaker:Physics"))
 	{
-		Extract(section, "timeScale",    timeScale,    {1.f});
-		Extract(section, "carMassScale", carMassScale, {0.f});
+		Extract(*section, "timeScale",    timeScale,    {1.f});
+		Extract(*section, "carMassScale", carMassScale, {0.f});
+		Extract(*section, "gravityScale", gravityScale);
 
-		Extract(section, "gravityScale", gravityScale);
+		Extract(*section, "toDilationScale",   toDilationScale,   {.001f});
+		Extract(*section, "fromDilationScale", fromDilationScale, {.001f});
 
-		Extract(section, "frictionBoost",    frictionBoost,    {0.f});
-		Extract(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
-		Extract(section, "aerodynamicDrag",  aerodynamicDrag,  {0.f, 100.f});
-		Extract(section, "steeringDrag",     steeringDrag,     {0.f, 85.f});
+		Extract(*section, "frictionBoost",    frictionBoost,    {0.f});
+		Extract(*section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+
+		Extract(*section, "aeroDragReduction",  aeroDragReduction,  {0.f,  100.f});
+		Extract(*section, "steerDragReduction", steerDragReduction, {15.f, 100.f});
 	}
 
-	const float complementRatio = (1.f - 1.f / timeScale) / .75f;
+	const float timeRate = 1.f / timeScale; // unity
 
-	activationScale   *= complementRatio;
-	deactivationScale *= complementRatio;
+	gravityBoost = gravity * (gravityScale - 1.f);
 
-	gravityBoost     = gravity * (gravityScale - 1.f);
-	frictionScale    = frictionBoost / 100.f;
-	aerodynamicScale = (100.f - aerodynamicDrag) / 100.f;
-	steeringScale    = (85.f - steeringDrag) / 100.f;
+	const float complementRatio = (1.f - timeRate) / .75f; // unity
+
+	activationScale   *= complementRatio * toDilationScale;
+	deactivationScale *= complementRatio * fromDilationScale;
+
+	frictionScale  = frictionBoost / 100.f;
+
+	aeroDragScale  = aeroDragReduction           / 100.f;
+	steerDragScale = (steerDragReduction - 15.f) / 100.f;
 
 	// Code changes
 	MemoryTools::Write<float*>(&timeScale,         {0x472C53});
-	MemoryTools::Write<float> (1.f / timeScale,    {0x6F4DD4});
+	MemoryTools::Write<float> (timeRate,           {0x6F4DD4});
 	MemoryTools::Write<float*>(&activationScale,   {0x6F4DC8});
 	MemoryTools::Write<float*>(&deactivationScale, {0x6F4DF4});
 	MemoryTools::Write<float> (carMassScale,       {0x901AEC});
 	MemoryTools::Write<float*>(&gravityBoost,      {0x6B1F17});
 	MemoryTools::Write<float*>(&frictionScale,     {0x6A9E37});
 	MemoryTools::Write<float*>(&maxSteeringAngle,  {0x69E990});
-	MemoryTools::Write<float*>(&aerodynamicScale,  {0x6B201E});
-	MemoryTools::Write<float*>(&steeringScale,     {0x6B1FA3});
+	MemoryTools::Write<float*>(&aeroDragScale,     {0x6B201E});
+	MemoryTools::Write<float*>(&steerDragScale,    {0x6B1FA3});
 }
 
 
 
 
 
-// Initialisation and injection ---------------------------------------------------------------------------------------------------------------------
+// Hook functions -----------------------------------------------------------------------------------------------------------------------------------
 
-address InitialiseSpeedFixerOriginal = 0x0;
+HOOK_ORIGINAL(Initialise);
 
-static void __cdecl InitialiseSpeedFixer
+static void __cdecl Initialise
 (
 	const size_t  numArgs,
 	const address argArray
 ) {
 	// Call original function first
-	AsFunction<decltype(InitialiseSpeedFixer)>(InitialiseSpeedFixerOriginal)(numArgs, argArray);
+	CALL_HOOK_ORIGINAL(Initialise, numArgs, argArray);
 
 	#ifdef _DEBUG
 	while (not IsDebuggerPresent()); // halt until debugger is attached
 	#endif
 
 	// Parse configuration file
+	const std::filesystem::path configFile = "scripts/NFSMWSpeedFixerSettings.ini";
+
 	std::ifstream fileStream(configFile);
 	if (not fileStream.is_open()) return;
 
-	const Parser parser(fileStream, /* sectionCapacity = */ 3, /* pairCapacityPerSection = */ 7);
+	const Parser parser
+	(
+		fileStream, 
+		/* sectionCapacity        = */ 3, 
+		/* pairCapacityPerSection = */ 9
+	);
 
 	// Initialise features
 	InitialiseActivation(parser);
@@ -304,7 +315,7 @@ BOOL WINAPI DllMain
 		return FALSE; // should never happen (assuming the user has actually read the README, which... yeah...)
 	}
 
-	InitialiseSpeedFixerOriginal = MemoryTools::ReplaceCall(0x6665B4, InitialiseSpeedFixer); // InitializeEverything (0x665FC0)
+	PATCH_HOOK_FUNCTION(Initialise, 0x6665B4); // InitializeEverything (0x665FC0)
 	
 	return TRUE;
 }
