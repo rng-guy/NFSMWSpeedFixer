@@ -1,7 +1,7 @@
 
 ![POV: You should've stopped a looooong time ago.](Thumbnail.jpg "Graphic design is still my passion.")
 
-SpeedFixer lets you **customise the speedbreaker mechanic** in *Need for Speed: Most Wanted* (2005):
+SpeedFixer lets you **customise the Speedbreaker mechanic** in *Need for Speed: Most Wanted* (2005):
 * the car speed required to activate it,
 * whether it has a limited active duration,
 * its maximum active duration when fully charged,

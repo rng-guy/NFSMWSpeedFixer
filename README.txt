@@ -3,7 +3,7 @@
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
-SpeedFixer lets you customise the speedbreaker mechanic:
+SpeedFixer lets you customise the Speedbreaker mechanic:
  • the car speed required to activate it,
  • whether it has a limited active duration,
  • its maximum active duration when fully charged,
