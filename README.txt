@@ -1,9 +1,9 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.04.01) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.04.02) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
-SpeedFixer lets you customise the Speedbreaker mechanic:
+SpeedFixer lets you CUSTOMISE THE SPEEDBREAKER MECHANIC:
  • the car speed required to activate it,
  • whether it has a limited active duration,
  • its maximum active duration when fully charged,
@@ -98,3 +98,4 @@ v1.00.00: Initial release
 
    04.00: Added dilation-transition feature
       01: Updated installation instructions
+      02: Corrected README formatting
