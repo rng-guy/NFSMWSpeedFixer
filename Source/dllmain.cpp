@@ -57,14 +57,12 @@ constexpr float mps2kph = 3.6f;   // kph / mps
 constexpr float deg2rad = .0175f; // rad / deg
 constexpr float gravity = -9.81f; // mps / second
 
-// Activation
-float maxDurationScale; // unity
+// Charge
+float durationScale; // unity
 
-// Recharging
-float activeScale; // unity
-
-float minDriftBase; // mps
-float minSlipRad;   // rad
+float minDriftSpeed; // mps
+float minDriftSlip;  // rad
+float driftScale;    // unity
 
 // Physics
 float timeScale;    // unity
@@ -73,11 +71,11 @@ float gravityBoost; // mps / second
 float activationScale;   // unity
 float deactivationScale; // unity
 
-float frictionScale;    // unity
-float maxSteeringAngle; // degrees
+float frontFrictionScale; // unity
+float maxSteeringAngle;   // degrees
 
-float aeroDragScale;  // unity
-float steerDragScale; // unity
+float aeroDragScale; // unity
+float slipGripScale; // unity
 
 
 
@@ -128,24 +126,25 @@ static void InitialiseActivation(const Parser& parser)
 {
 	bool hasFiniteDuration = false;
 
-	float minSpeedToActivate = 30.f / kph2mph; // kph
-	float maxDuration        = 10.f;           // seconds
+	float minCarSpeed = 30.f / kph2mph; // kph
+	float maxDuration = 10.f;           // seconds
 
 	// Extraction
-	if (const auto* const section = parser.GetSection("Speedbreaker:Activation"))
+	if (const auto* const section = parser.GetSection("Activation"))
 	{
-		Extract(section, "minCarSpeed", minSpeedToActivate, {0.f});
+		Extract(section, "minCarSpeed", minCarSpeed, {0.f});
 		hasFiniteDuration = Extract(section, "maxDuration", maxDuration, {.001f});
 	}
 
-	maxDurationScale = 1.f / maxDuration;
+	// Conversion
+	durationScale = 1.f / maxDuration;
 
 	// Code changes
-	MemoryTools::Write<float> (minSpeedToActivate * kph2mph, {0x8B01C0});
-	MemoryTools::Write<float*>(&maxDurationScale,            {0x6EDDC3});
+	MemoryTools::Write<float> (minCarSpeed * kph2mph, {0x8B01C0});
+	MemoryTools::Write<float*>(&durationScale,        {0x6EDDC3});
 
 	if (not hasFiniteDuration)
-		MemoryTools::Write<byte>(0xEB, {0x6EDDB9}); // jump near, relative
+		MemoryTools::Write<byte>(0xEB, {0x6EDDB9, 0x6F8F76}); // jump near, relative
 }
 
 
@@ -154,39 +153,46 @@ static void InitialiseRecharging(const Parser& parser)
 {
 	bool canRechargePassively = false;
 
-	float minSpeedToRecharge = 100.f / kph2mph; // kph
-	float rechargeTime       = 25.f;            // seconds
+	float minCarSpeed = 100.f / kph2mph; // kph
+	float passiveTime = 25.f;            // seconds
 
-	activeScale = .5f; // unity
+	float minSpeedActive = 35.f / kph2mph; // kph
+	float minSlipAngle   = 30.f;           // degrees
+	float activeScale    = 1.f;            // unity
 
-	float minDriftSpeed = 35.f / kph2mph; // kph
-	float minDriftSlip  = 30.f;           // degrees
+	driftScale = .5f; // unity
 
 	// Extraction
-	if (const auto* const section = parser.GetSection("Speedbreaker:Recharging"))
+	if (const auto* const section = parser.GetSection("Recharging"))
 	{
-		const bool speedDefined = Extract(section, "minCarSpeed",  minSpeedToRecharge, {0.f});
-		const bool timeDefined  = Extract(section, "rechargeTime", rechargeTime,       {.001f});
+		const bool speedDefined = Extract(section, "minCarSpeed", minCarSpeed, {0.f});
+		const bool timeDefined  = Extract(section, "passiveTime", passiveTime, {.001f});
 
 		canRechargePassively = (speedDefined or timeDefined);
 
-		Extract(section, "activeScale",   activeScale,   {0.f});
-		Extract(section, "minDriftSpeed", minDriftSpeed, {0.f});
-		Extract(section, "minDriftSlip",  minDriftSlip,  {0.f, 90.f});
+		Extract(section, "minDriftSpeed", minSpeedActive, {0.f});
+		Extract(section, "minSlipAngle",  minSlipAngle,   {0.f, 90.f});
+		Extract(section, "activeScale",   activeScale);
 	}
 
-	minDriftBase = minDriftSpeed / mps2kph;
-	minSlipRad   = minDriftSlip * deg2rad;
+	// Conversion
+	minDriftSpeed = minSpeedActive / mps2kph;
+	minDriftSlip  = minSlipAngle * deg2rad;
+
+	const float durationRatio = 10.f * durationScale; // unity
+
+	driftScale *= durationRatio * activeScale;
 
 	// Code changes
-	MemoryTools::Write<float> (minSpeedToRecharge * kph2mph, {0x901AE8});
-	MemoryTools::Write<float> (rechargeTime,                 {0x901AE4});
-	MemoryTools::Write<float*>(&activeScale,                 {0x6A99F8});
-	MemoryTools::Write<float*>(&minDriftBase,                {0x6A99B8});
-	MemoryTools::Write<float*>(&minSlipRad,                  {0x6A99CB});
+	MemoryTools::Write<float>(minCarSpeed * kph2mph, {0x901AE8});
+	MemoryTools::Write<float>(passiveTime,           {0x901AE4});
 
 	if (not canRechargePassively)
 		MemoryTools::Write<byte>(0xEB, {0x6EDDE3}); // jump near, relative
+	
+	MemoryTools::Write<float*>(&minDriftSpeed, {0x6A99B8});
+	MemoryTools::Write<float*>(&minDriftSlip,  {0x6A99CB});
+	MemoryTools::Write<float*>(&driftScale,    {0x6A99F8});
 }
 
 
@@ -204,15 +210,15 @@ static void InitialisePhysics(const Parser& parser)
 	activationScale   = 2.f; // unity
 	deactivationScale = .5f; // unity
 
-	float frictionBoost = 75.f; // percent
+	float frontFrictionBoost = 75.f; // percent
 
 	maxSteeringAngle = 60.f; // degrees
 
-	float aeroDragReduction  = 75.f;  // percent
-	float steerDragReduction = 100.f; // percent
+	float aeroDragReduction = 75.f;  // percent
+	float slipGripReduction = 100.f; // percent
 
 	// Extraction
-	if (const auto* const section = parser.GetSection("Speedbreaker:Physics"))
+	if (const auto* const section = parser.GetSection("Physics"))
 	{
 		Extract(section, "timeScale",    timeScale,    {1.f});
 		Extract(section, "carMassScale", carMassScale, {0.f});
@@ -221,13 +227,14 @@ static void InitialisePhysics(const Parser& parser)
 		Extract(section, "toDilationScale",   toDilationScale,   {.001f});
 		Extract(section, "fromDilationScale", fromDilationScale, {.001f});
 
-		Extract(section, "frictionBoost",    frictionBoost,    {0.f});
-		Extract(section, "maxSteeringAngle", maxSteeringAngle, {0.f, 90.f});
+		Extract(section, "frontFrictionBoost", frontFrictionBoost, {0.f});
+		Extract(section, "maxSteeringAngle",   maxSteeringAngle,   {0.f, 90.f});
 
-		Extract(section, "aeroDragReduction",  aeroDragReduction,  {0.f,  100.f});
-		Extract(section, "steerDragReduction", steerDragReduction, {15.f, 100.f});
+		Extract(section, "aeroDragReduction", aeroDragReduction, {0.f,  100.f});
+		Extract(section, "slipGripReduction", slipGripReduction, {15.f, 100.f});
 	}
 
+	// Conversion
 	const float timeRate = 1.f / timeScale; // unity
 
 	gravityBoost = gravity * (gravityScale - 1.f);
@@ -237,22 +244,25 @@ static void InitialisePhysics(const Parser& parser)
 	activationScale   *= complementRatio * toDilationScale;
 	deactivationScale *= complementRatio * fromDilationScale;
 
-	frictionScale  = frictionBoost / 100.f;
+	frontFrictionScale  = frontFrictionBoost / 100.f;
 
-	aeroDragScale  = aeroDragReduction           / 100.f;
-	steerDragScale = (steerDragReduction - 15.f) / 100.f;
+	aeroDragScale = aeroDragReduction          / 100.f;
+	slipGripScale = (slipGripReduction - 15.f) / 100.f;
 
 	// Code changes
-	MemoryTools::Write<float*>(&timeScale,         {0x472C53});
-	MemoryTools::Write<float> (timeRate,           {0x6F4DD4});
+	MemoryTools::Write<float*>(&timeScale,    {0x472C53});
+	MemoryTools::Write<float> (timeRate,      {0x6F4DD4});
+	MemoryTools::Write<float> (carMassScale,  {0x901AEC});
+	MemoryTools::Write<float*>(&gravityBoost, {0x6B1F17});
+
 	MemoryTools::Write<float*>(&activationScale,   {0x6F4DC8});
 	MemoryTools::Write<float*>(&deactivationScale, {0x6F4DF4});
-	MemoryTools::Write<float> (carMassScale,       {0x901AEC});
-	MemoryTools::Write<float*>(&gravityBoost,      {0x6B1F17});
-	MemoryTools::Write<float*>(&frictionScale,     {0x6A9E37});
-	MemoryTools::Write<float*>(&maxSteeringAngle,  {0x69E990});
-	MemoryTools::Write<float*>(&aeroDragScale,     {0x6B201E});
-	MemoryTools::Write<float*>(&steerDragScale,    {0x6B1FA3});
+
+	MemoryTools::Write<float*>(&frontFrictionScale, {0x6A9E37});
+	MemoryTools::Write<float*>(&maxSteeringAngle,   {0x69E990});
+
+	MemoryTools::Write<float*>(&aeroDragScale, {0x6B201E});
+	MemoryTools::Write<float*>(&slipGripScale, {0x6B1FA3});
 }
 
 
@@ -268,7 +278,6 @@ static void __cdecl Initialise
 	const size_t  numArgs,
 	const address argArray
 ) {
-	// Call original function first
 	CALL_HOOK_ORIGINAL(Initialise, numArgs, argArray);
 
 	#ifdef _DEBUG
@@ -289,9 +298,9 @@ static void __cdecl Initialise
 	);
 
 	// Initialise features
-	InitialiseActivation(parser);
-	InitialiseRecharging(parser);
-	InitialisePhysics   (parser);
+	InitialiseActivation(parser); // must precede InitialiseRecharging
+	InitialiseRecharging(parser); // must follow  InitialiseActivation
+	InitialisePhysics   (parser); // independent of other helpers
 }
 
 

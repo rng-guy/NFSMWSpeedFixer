@@ -1,18 +1,17 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.04.02) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.05.00) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
 SpeedFixer lets you CUSTOMISE THE SPEEDBREAKER MECHANIC:
  • the car speed required to activate it,
- • whether it has a limited active duration,
- • its maximum active duration when fully charged,
- • whether you can recharge it passively over time,
+ • its maximum duration when fully charged,
+ • whether it can recharge passively over time,
  • the car speed required to trigger passive recharging,
- • how long fully passive recharging takes to complete,
- • how effective active recharging (by drifting) is,
- • the drifting speed required to trigger active recharging,
- • the slip angle     required to trigger active recharging,
+ • the time required for passive recharging to complete,
+ • the car speed  required to trigger active recharging,
+ • the slip angle required to trigger active recharging,
+ • the overall effectiveness of active recharging,
  • the dilation multiplier for in-game time,
  • the car-mass multiplier for collisions,
  • the gravity  multiplier for downforce,
@@ -20,13 +19,13 @@ SpeedFixer lets you CUSTOMISE THE SPEEDBREAKER MECHANIC:
  • the boost to front-wheel steering friction,
  • the maximum  front-wheel steering angle,
  • the reduction of aerodynamic drag, and
- • the reduction of steering    drag.
+ • the reduction of forward grip when slipping.
 
 The SECTIONS BELOW address these questions in detail:
  1) • How do I install SpeedFixer for my game?
  2) • Which mods are (in)compatible with SpeedFixer?
- 3) • How may I share or bundle SpeedFixer?
- 4) • What changed in each version of SpeedFixer?
+ 3) • How may I share or bundle          SpeedFixer?
+ 4) • What changed in each version of    SpeedFixer?
 
 
 
@@ -50,7 +49,6 @@ AFTER INSTALLING SpeedFixer, edit its "NFSMWSpeedFixerSettings.ini" file to your
 TO UNINSTALL SpeedFixer, remove its files from your game's "scripts" folder.
 
 TO UPDATE SpeedFixer, uninstall it and repeat the installation process above.
-If you update from a version older than v1.04.00, replace the old configuration file.
 
 
 
@@ -61,8 +59,7 @@ If you update from a version older than v1.04.00, replace the old configuration 
 
 All VLTED AND BINARY MODS should be fully compatible with all SpeedFixer configurations.
 
-Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations. If you
-use the "NFSMW ExtraOptions" mod by ExOptsTeam, SpeedFixer overrides all its Speedbreaker features.
+Almost all OTHER .ASI MODS should be fully compatible with all SpeedFixer configurations.
 
 
 
@@ -71,9 +68,7 @@ use the "NFSMW ExtraOptions" mod by ExOptsTeam, SpeedFixer overrides all its Spe
 
 ── ■ │ 3 - HOW MAY I SHARE OR BUNDLE SPEEDFIXER? │ ■ ──────────────────────────────────────────────
 
-You are free to bundle SpeedFixer and its files with your own mod, NO CREDIT REQUIRED.
-In the interest of code transparency, however, consider linking to SpeedFixer's GitHub repository 
-(https://github.com/rng-guy/NFSMWSpeedFixer) somewhere in your mod's documentation (e.g. README).
+You're free to bundle SpeedFixer and its files with your own mod(s); NO CREDIT REQUIRED.
 
 
 
@@ -99,3 +94,5 @@ v1.00.00: Initial release
    04.00: Added dilation-transition feature
       01: Updated installation instructions
       02: Corrected README formatting
+
+   05.00: Improved configuration structure and logic
