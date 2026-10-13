@@ -52,13 +52,13 @@ using Parser = StreamParser::Parser<>;
 
 // Mod data -----------------------------------------------------------------------------------------------------------------------------------------
 
-constexpr float kph2mph = .6214f; // mph / kph
-constexpr float mps2kph = 3.6f;   // kph / mps
-constexpr float deg2rad = .0175f; // rad / deg
-constexpr float gravity = -9.81f; // mps / second
+constexpr float mps2kph = 3.6f;    // kph / mps
+constexpr float kph2mph = .62137f; // mph / kph
+constexpr float deg2rad = .01745f; // rad / deg
+constexpr float gravity = -9.81f;  // mps / second
 
 // Charge
-float durationScale; // unity
+float chargeDrainRate; // hertz
 
 float minDriftSpeed; // mps
 float minDriftSlip;  // rad
@@ -137,11 +137,11 @@ static void InitialiseActivation(const Parser& parser)
 	}
 
 	// Conversion
-	durationScale = 1.f / maxDuration;
+	chargeDrainRate = 1.f / maxDuration;
 
 	// Code changes
 	MemoryTools::Write<float> (minCarSpeed * kph2mph, {0x8B01C0});
-	MemoryTools::Write<float*>(&durationScale,        {0x6EDDC3});
+	MemoryTools::Write<float*>(&chargeDrainRate,      {0x6EDDC3});
 
 	if (not hasFiniteDuration)
 		MemoryTools::Write<byte>(0xEB, {0x6EDDB9, 0x6F8F76}); // jump near, relative
@@ -179,7 +179,7 @@ static void InitialiseRecharging(const Parser& parser)
 	minDriftSpeed = minSpeedActive / mps2kph;
 	minDriftSlip  = minSlipAngle * deg2rad;
 
-	const float durationRatio = 10.f * durationScale; // unity
+	const float durationRatio = 10.f * chargeDrainRate; // unity
 
 	driftScale *= durationRatio * activeScale;
 
