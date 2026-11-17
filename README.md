@@ -45,7 +45,7 @@ The **sections below** address these questions in detail:
 &nbsp;
 
 **To install** SpeedFixer:
-1. download and extract the [`NfSMW_SpeedFixer_v1.05.0.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
+1. download and extract the [`NfSMW_SpeedFixer_v1.05.1.7z`](https://github.com/rng-guy/NFSMWSpeedFixer/releases/latest) archive;
 2. copy SpeedFixer's `scripts` folder to your game's folder, replacing existing files; and
 3. if SpeedFixer's `.asi` file gets flagged by your antivirus software, whitelist the file.
 

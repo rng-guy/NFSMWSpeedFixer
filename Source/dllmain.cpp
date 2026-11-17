@@ -23,10 +23,6 @@
 
 #include <Windows.h>
 
-#ifdef _DEBUG
-#include <debugapi.h>
-#endif
-
 #include <fstream>
 #include <optional>
 #include <filesystem>
@@ -140,11 +136,11 @@ static void InitialiseActivation(const Parser& parser)
 	chargeDrainRate = 1.f / maxDuration;
 
 	// Code changes
-	MemoryTools::Write<float> (minCarSpeed * kph2mph, {0x8B01C0});
-	MemoryTools::Write<float*>(&chargeDrainRate,      {0x6EDDC3});
+	MemoryTools::WriteToAddresses<float> (minCarSpeed * kph2mph, {0x8B01C0});
+	MemoryTools::WriteToAddresses<float*>(&chargeDrainRate,      {0x6EDDC3});
 
 	if (not hasFiniteDuration)
-		MemoryTools::Write<byte>(0xEB, {0x6EDDB9, 0x6F8F76}); // jump near, relative
+		MemoryTools::WriteToAddresses<byte>(0xEB, {0x6EDDB9, 0x6F8F76}); // jump near, relative
 }
 
 
@@ -184,15 +180,15 @@ static void InitialiseRecharging(const Parser& parser)
 	driftScale *= durationRatio * activeScale;
 
 	// Code changes
-	MemoryTools::Write<float>(minCarSpeed * kph2mph, {0x901AE8});
-	MemoryTools::Write<float>(passiveTime,           {0x901AE4});
+	MemoryTools::WriteToAddresses<float>(minCarSpeed * kph2mph, {0x901AE8});
+	MemoryTools::WriteToAddresses<float>(passiveTime,           {0x901AE4});
 
 	if (not canRechargePassively)
-		MemoryTools::Write<byte>(0xEB, {0x6EDDE3}); // jump near, relative
+		MemoryTools::WriteToAddresses<byte>(0xEB, {0x6EDDE3}); // jump near, relative
 	
-	MemoryTools::Write<float*>(&minDriftSpeed, {0x6A99B8});
-	MemoryTools::Write<float*>(&minDriftSlip,  {0x6A99CB});
-	MemoryTools::Write<float*>(&driftScale,    {0x6A99F8});
+	MemoryTools::WriteToAddresses<float*>(&minDriftSpeed, {0x6A99B8});
+	MemoryTools::WriteToAddresses<float*>(&minDriftSlip,  {0x6A99CB});
+	MemoryTools::WriteToAddresses<float*>(&driftScale,    {0x6A99F8});
 }
 
 
@@ -250,19 +246,19 @@ static void InitialisePhysics(const Parser& parser)
 	slipGripScale = (slipGripReduction - 15.f) / 100.f;
 
 	// Code changes
-	MemoryTools::Write<float*>(&timeScale,    {0x472C53});
-	MemoryTools::Write<float> (timeRate,      {0x6F4DD4});
-	MemoryTools::Write<float> (carMassScale,  {0x901AEC});
-	MemoryTools::Write<float*>(&gravityBoost, {0x6B1F17});
+	MemoryTools::WriteToAddresses<float*>(&timeScale,    {0x472C53});
+	MemoryTools::WriteToAddresses<float> (timeRate,      {0x6F4DD4});
+	MemoryTools::WriteToAddresses<float> (carMassScale,  {0x901AEC});
+	MemoryTools::WriteToAddresses<float*>(&gravityBoost, {0x6B1F17});
 
-	MemoryTools::Write<float*>(&activationScale,   {0x6F4DC8});
-	MemoryTools::Write<float*>(&deactivationScale, {0x6F4DF4});
+	MemoryTools::WriteToAddresses<float*>(&activationScale,   {0x6F4DC8});
+	MemoryTools::WriteToAddresses<float*>(&deactivationScale, {0x6F4DF4});
 
-	MemoryTools::Write<float*>(&frontFrictionScale, {0x6A9E37});
-	MemoryTools::Write<float*>(&maxSteeringAngle,   {0x69E990});
+	MemoryTools::WriteToAddresses<float*>(&frontFrictionScale, {0x6A9E37});
+	MemoryTools::WriteToAddresses<float*>(&maxSteeringAngle,   {0x69E990});
 
-	MemoryTools::Write<float*>(&aeroDragScale, {0x6B201E});
-	MemoryTools::Write<float*>(&slipGripScale, {0x6B1FA3});
+	MemoryTools::WriteToAddresses<float*>(&aeroDragScale, {0x6B201E});
+	MemoryTools::WriteToAddresses<float*>(&slipGripScale, {0x6B1FA3});
 }
 
 
@@ -279,10 +275,6 @@ void __cdecl Initialise
 	const address argArray
 ) {
 	CALL_HOOK_ORIGINAL(Initialise, numArgs, argArray);
-
-	#ifdef _DEBUG
-	while (not IsDebuggerPresent()); // halt until debugger is attached
-	#endif
 
 	// Parse configuration file
 	const std::filesystem::path configFile = "scripts/NFSMWSpeedFixerSettings.ini";
@@ -315,16 +307,10 @@ BOOL WINAPI DllMain
 	const DWORD     fdwReason,
 	const LPVOID    lpvReserved
 ) {
-	if (fdwReason != DLL_PROCESS_ATTACH) return TRUE;
-
-	if (MemoryTools::GetEntryPoint() != 0x3C4040) // .exe-dependent entry point
-	{
-		MessageBoxA(NULL, "This .exe isn't compatible with SpeedFixer.\nSee SpeedFixer's README for help.", "NFSMW SpeedFixer", MB_ICONERROR);
-
-		return FALSE; // should never happen (assuming the user has actually read the README, which... yeah...)
-	}
+	if (fdwReason != DLL_PROCESS_ATTACH)             return true;
+	if (not MemoryTools::AssertEntryPoint(0x3C4040)) return false;
 
 	PATCH_HOOK_FUNCTION(Initialise, 0x6665B4); // InitializeEverything (0x665FC0)
-	
-	return TRUE;
+
+	return true;
 }

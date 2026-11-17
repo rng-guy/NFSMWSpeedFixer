@@ -1,5 +1,5 @@
 
-── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.05.00) │ ■ ───────────────────────────────────────────────────
+── ■ │ WHAT IS NFSMW SPEEDFIXER? (v1.05.01) │ ■ ───────────────────────────────────────────────────
 
 VIEW THIS FILE on GitHub: https://github.com/rng-guy/NFSMWSpeedFixer
 
@@ -96,3 +96,4 @@ v1.00.00: Initial release
       02: Corrected README formatting
 
    05.00: Improved configuration structure and logic
+      01: Improved mod internals and error handling
