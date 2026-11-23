@@ -96,4 +96,4 @@ v1.00.00: Initial release
       02: Corrected README formatting
 
    05.00: Improved configuration structure and logic
-      01: Improved mod internals and error handling
+      01: Removed dilation restrictions to allow time speedups

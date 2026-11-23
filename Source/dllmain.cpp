@@ -216,7 +216,7 @@ static void InitialisePhysics(const Parser& parser)
 	// Extraction
 	if (const auto* const section = parser.GetSection("Physics"))
 	{
-		Extract(section, "timeScale",    timeScale,    {1.f});
+		Extract(section, "timeScale",    timeScale,    {.001f});
 		Extract(section, "carMassScale", carMassScale, {0.f});
 		Extract(section, "gravityScale", gravityScale);
 
